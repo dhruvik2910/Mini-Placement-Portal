@@ -122,7 +122,9 @@ export class NotificationDispatcherService {
       : NotificationDeliveryStatus.FAILED;
 
     // Sanitize non-ASCII characters for DB collation safety
+    // eslint-disable-next-line no-control-regex
     const cleanSubject = options.subject.replace(/[^\x00-\x7F]/g, '');
+    // eslint-disable-next-line no-control-regex
     const cleanBody = options.bodyText.replace(/[^\x00-\x7F]/g, '');
 
     // 3. Record in Delivery Log (Audit Trail)
@@ -260,7 +262,7 @@ export class NotificationDispatcherService {
   async dispatchApplicationStatus(
     applicationId: string,
     newStatus: ApplicationStatus,
-    notes?: string | null
+    _notes?: string | null
   ): Promise<void> {
     try {
       console.log(`[DISPATCHER] dispatchApplicationStatus called for ${applicationId}, newStatus: ${newStatus}`);
