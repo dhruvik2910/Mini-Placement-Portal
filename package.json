@@ -1,0 +1,31 @@
+{
+  "name": "mini-placement-portal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-quality college Mini Placement Portal monorepo",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace=@placement/api",
+    "dev:web": "npm run dev --workspace=@placement/web",
+    "build:shared": "npm run build --workspace=@placement/shared",
+    "build:api": "npm run build --workspace=@placement/api",
+    "build:web": "npm run build --workspace=@placement/web",
+    "build": "npm run build:shared && npm run build:api && npm run build:web",
+    "typecheck": "npm run typecheck:shared && npm run typecheck:api && npm run typecheck:web",
+    "typecheck:shared": "npm run typecheck --workspace=@placement/shared",
+    "typecheck:api": "npm run typecheck --workspace=@placement/api",
+    "typecheck:web": "npm run typecheck --workspace=@placement/web",
+    "lint": "npm run lint:api && npm run lint:web",
+    "lint:api": "npm run lint --workspace=@placement/api",
+    "lint:web": "npm run lint --workspace=@placement/web",
+    "prisma:validate": "npm run prisma:validate --workspace=@placement/api",
+    "prisma:generate": "npm run prisma:generate --workspace=@placement/api"
+  },
+  "devDependencies": {
+    "embedded-postgres": "^18.4.0-beta.17",
+    "prettier": "^3.3.3"
+  }
+}

@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"tertiary-fixed":"#85f8c4","on-secondary-fixed":"#00174b","outline-variant":"#c5c5d3","surface":"#f8f9ff","background":"#f8f9ff","on-tertiary":"#ffffff","on-tertiary-fixed":"#002114","secondary-fixed-dim":"#b4c5ff","on-surface":"#0b1c30","surface-bright":"#f8f9ff","primary":"#00236f","secondary-fixed":"#dbe1ff","outline":"#757682","error-container":"#ffdad6","tertiary-fixed-dim":"#68dba9","surface-container-highest":"#d3e4fe","inverse-on-surface":"#eaf1ff","secondary-container":"#316bf3","primary-container":"#1e3a8a","surface-tint":"#4059aa","surface-container-high":"#dce9ff","surface-container-low":"#eff4ff","on-secondary-fixed-variant":"#003ea8","on-primary-container":"#90a8ff","on-error":"#ffffff","on-tertiary-fixed-variant":"#005137","on-surface-variant":"#444651","on-primary-fixed":"#00164e","on-tertiary-container":"#4ac08f","inverse-primary":"#b6c4ff","on-secondary":"#ffffff","on-background":"#0b1c30","tertiary":"#003120","on-secondary-container":"#fefcff","inverse-surface":"#213145","tertiary-container":"#004a32","surface-container":"#e5eeff","secondary":"#0051d5","surface-variant":"#d3e4fe","on-primary-fixed-variant":"#264191","primary-fixed":"#dce1ff","surface-container-lowest":"#ffffff","on-primary":"#ffffff","error":"#ba1a1a","surface-dim":"#cbdbf5","primary-fixed-dim":"#b6c4ff","on-error-container":"#93000a"},borderRadius:{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},spacing:{"space-lg":"1.5rem","margin":"1rem","space-xs":"0.25rem","space-sm":"0.5rem","space-md":"1rem","gutter":"1rem","margin-md":"1.5rem","space-xl":"2rem","gutter-lg":"1.5rem","margin-lg":"2rem"},fontFamily:{"body-sm":["Inter"],"headline-lg":["Plus Jakarta Sans"],"body-md":["Inter"],"label-md":["Inter"],"headline-xl":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"body-lg":["Inter"],"data-tabular":["Inter"],"label-sm":["Inter"],"headline-xl-mobile":["Plus Jakarta Sans"]},fontSize:{"body-sm":["13px",{lineHeight:"18px",fontWeight:"400"}],"headline-lg":["28px",{lineHeight:"36px",letterSpacing:"-0.015em",fontWeight:"600"}],"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"label-md":["13px",{lineHeight:"16px",fontWeight:"500"}],"headline-xl":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"700"}],"headline-sm":["16px",{lineHeight:"24px",letterSpacing:"-0.005em",fontWeight:"600"}],"headline-md":["20px",{lineHeight:"26px",letterSpacing:"-0.01em",fontWeight:"600"}],"headline-lg-mobile":["22px",{lineHeight:"28px",letterSpacing:"-0.01em",fontWeight:"600"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"data-tabular":["13px",{lineHeight:"18px",letterSpacing:"-0.01em",fontWeight:"500"}],"label-sm":["11px",{lineHeight:"14px",letterSpacing:"0.04em",fontWeight:"600"}],"headline-xl-mobile":["28px",{lineHeight:"36px",letterSpacing:"-0.015em",fontWeight:"700"}]}}}}</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest z-50 flex flex-col shadow-[1px_0_8px_rgba(0,0,0,0.03)]"><div class="h-16 px-space-md flex items-center gap-space-sm"><img alt="CampusPlacement OS Official Crest" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UC4gMAsPUAGOmloOZQI1gvLm32eCGtIxnP-rLuWusZEwIzaIjSMRiXZ7EVqB0m8kw2hzw2lWwqbP3IH_Y0TLJYAWI96eWV-BWL2UlQYalQbo05tyIZXKwSxupxDFh-9FkXnaA19tZu1bKmxIDAl1VTOhKXvl7poqjW6PO6nRdO5hRXEPbBjwxPdVEOU7JVEW0G-hb74VLMarhozzVrkGmpX0-wFjj1gB4pCnDpgy5r2i-bvzyFGFaMUHg"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary font-bold leading-tight">Placement OS</span><span class="font-label-sm text-label-sm text-on-surface-variant font-medium leading-none">TPO Admin Console</span></div></div><div class="px-space-md py-space-sm"><div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col gap-0.5"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface font-semibold">Session AY 2024-25</span><span class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">Audited</span></div><span class="font-body-sm text-body-sm text-on-surface-variant">Phase I Tier-1 Cycle</span></div></div><nav class="flex-1 px-space-sm py-space-sm flex flex-col gap-1 overflow-y-auto" data-active-classes="bg-primary-container text-on-primary font-semibold"><div class="px-space-sm py-1 font-label-sm text-label-sm text-outline uppercase tracking-wider">Cohort Operations</div><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="central-tpo-command" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-label-md text-label-md">Central Command</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg transition-colors bg-primary-container text-on-primary font-semibold" data-path="live-recruitment-drives" href="#"><span class="material-symbols-outlined text-[20px]">business_center</span><span class="font-label-md text-label-md">Live Drives &amp; JDs</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="student-master-registry" href="#"><span class="material-symbols-outlined text-[20px]">group</span><span class="font-label-md text-label-md">Student Master Registry</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="shortlist-and-interviews" href="#"><span class="material-symbols-outlined text-[20px]">event_available</span><span class="font-label-md text-label-md">Slotting &amp; Interviews</span></a><div class="px-space-sm py-1 mt-space-sm font-label-sm text-label-sm text-outline uppercase tracking-wider">Governance &amp; Audit</div><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="offer-and-acceptance-ledger" href="#"><span class="material-symbols-outlined text-[20px]">verified</span><span class="font-label-md text-label-md">Offer &amp; PPO Ledger</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="placement-analytics-reports" href="#"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="font-label-md text-label-md">Dean Analytics &amp; NIRF</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="institutional-compliance-locks" href="#"><span class="material-symbols-outlined text-[20px]">shield_lock</span><span class="font-label-md text-label-md">Profile Freeze &amp; Policy</span></a></nav><div class="p-space-sm bg-surface-container-low"><div class="flex items-center gap-space-xs p-space-xs rounded-lg bg-surface-container-lowest shadow-[0_1px_4px_rgba(0,0,0,0.04)]"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJSnIiF3XwApTamdAvcBa52N7kayVUGExWt8CER-Q_A-dyYO849_7QZbus4ZwhojE6nXd89oKAZ_KsniDmFW7Xfa_4NrV4wIFyS_MUuHFeEZymO-sH3s8VRA39SE1-3idMyX61JqjgMaWXjxVpvrVvivyhAG6voeonBxuDwCPyVK04sBUKsiSZW0ghOFhrNaEI85Sm3bpnXDTM6ywYzg-pjl7LpcTiBjuz7XiGqkPQOnYm4avMSKPR"/><div class="flex flex-col min-w-0 flex-1"><span class="font-label-sm text-label-sm text-on-surface font-semibold truncate">Prof. A. S. Sharma</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate">Head TPO &amp; Placement Dean</span></div><span class="material-symbols-outlined text-[18px] text-on-surface-variant">unfold_more</span></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs"><span class="inline-flex items-center px-space-xs py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm uppercase tracking-wide">Batch 2024-25</span><span class="font-label-sm text-label-sm text-on-surface-variant font-medium hidden sm:inline">Institutional Placement Cycle</span></div><div class="hidden md:flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-low font-body-sm text-body-sm text-on-surface-variant"><span class="material-symbols-outlined text-[16px] text-tertiary-container">circle</span><span>Academic Registry Synced: Today 08:30 IST</span></div></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center p-0.5 rounded-full bg-surface-container"><button class="px-space-sm py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" type="button">Student Portal</button><button class="px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-primary text-on-primary shadow-[0_1px_4px_rgba(0,0,0,0.06)] font-semibold" type="button">Central TPO Portal</button></div><button aria-label="Notifications" class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full ring-2 ring-surface-container-lowest"></span></button><div class="flex items-center gap-space-xs cursor-pointer"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJSnIiF3XwApTamdAvcBa52N7kayVUGExWt8CER-Q_A-dyYO849_7QZbus4ZwhojE6nXd89oKAZ_KsniDmFW7Xfa_4NrV4wIFyS_MUuHFeEZymO-sH3s8VRA39SE1-3idMyX61JqjgMaWXjxVpvrVvivyhAG6voeonBxuDwCPyVK04sBUKsiSZW0ghOFhrNaEI85Sm3bpnXDTM6ywYzg-pjl7LpcTiBjuz7XiGqkPQOnYm4avMSKPR"/><span class="material-symbols-outlined text-[18px] text-on-surface-variant">expand_more</span></div></div></header><main class="relative pt-16 w-full min-h-screen bg-background"><div class="flex flex-col w-full">
+<!-- Sticky Context Action Bar -->
+<div class="bg-surface-container-lowest shadow-sm px-space-lg py-space-sm flex flex-wrap items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm min-w-0">
+<a class="p-1 rounded-lg hover:bg-surface-container transition-colors text-on-surface-variant flex items-center justify-center" href="#">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+</a>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span>Recruitment Drives</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-semibold">GGL-2024-DRV-089</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span>
+        Active Drive
+      </span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant">
+        Tier 1 Super Dream (₹20+ LPA)
+      </span>
+</div>
+<!-- Top CTA Action Cluster -->
+<div class="flex items-center flex-wrap gap-space-xs">
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-surface-container font-label-md text-label-md flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">edit_note</span>
+        Edit Criteria
+      </button>
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-low text-error hover:bg-error-container font-label-md text-label-md flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">pause_circle</span>
+        Pause Drive
+      </button>
+<button class="px-space-sm py-1.5 rounded-lg bg-secondary text-on-secondary shadow-sm hover:opacity-95 font-label-md text-label-md flex items-center gap-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">download</span>
+        Export CSV (NIRF Compliant)
+      </button>
+<button class="px-space-md py-1.5 rounded-lg bg-primary text-on-primary shadow-sm hover:bg-primary-container font-label-md text-label-md flex items-center gap-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">send</span>
+        Notify Eligible (Campus Email)
+      </button>
+</div>
+</div>
+<div class="p-space-lg flex flex-col gap-space-lg max-w-[1600px] w-full mx-auto">
+<!-- Drive Specification Hero Card with Bento Split -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
+<!-- Google Cloud Hero Overview -->
+<div class="lg:col-span-7 flex flex-col justify-between">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-md">
+<div class="w-14 h-14 rounded-xl bg-surface-container-low flex items-center justify-center p-2">
+<img class="w-10 h-10 object-contain" data-alt="Official Google corporate technology cloud engineering logo vector on ultra-clean minimal white square badge with soft blue accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaqcFzy4_hXtPxZfbClSOdVp-IZDORyedoua5ZRFnB87pi_0UHBSKbAe6oKnYgW2bw4tdMTPwIcQiQy_aNNKp0xAGzioFtPMR-HXnH8n9muBwp2Lb5HInDb6-YjvspvLqLvLn5XVae6bLpDjPyrGv2ITlkCI5KNEQ5whMriNprI3w6DiVmyNtIs-Fukn9pmvBuLzwqH3IbpBT5uLiVRfkkm6sI4DTW56TwURPy_Vq9jk87g6CQ7nq_"/>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<h1 class="font-headline-lg text-headline-lg text-primary">Google Cloud</h1>
+<span class="material-symbols-outlined text-secondary text-[20px]" title="Enterprise Partner Verified">verified</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Software Engineer — Cloud Platform Infrastructure</p>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm mt-0.5">
+<span class="material-symbols-outlined text-[16px]">pin_drop</span>
+<span>Bengaluru / Hyderabad (Onsite R&amp;D Campus)</span>
+<span class="mx-1">•</span>
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>Full-Time Placement + 6M Mandatory Capstone Internship</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Compensation Breakdown Callout -->
+<div class="mt-space-md p-space-md rounded-xl bg-surface-container-low flex flex-wrap items-center justify-between gap-space-md">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-xl text-headline-xl text-primary font-bold">₹32.00</span>
+<span class="font-headline-sm text-headline-sm text-primary font-semibold">LPA CTC</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant ml-2">(Tier 1 Super Dream)</span>
+</div>
+<div class="flex items-center gap-space-md text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex flex-col text-right">
+<span class="font-semibold text-on-surface">₹26,00,000</span>
+<span class="font-label-sm text-label-sm text-outline">Fixed Base Annual</span>
+</div>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<div class="flex flex-col text-right">
+<span class="font-semibold text-on-surface">₹6,00,000</span>
+<span class="font-label-sm text-label-sm text-outline">GSU Stocks + Relocation</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Drive Schedule Sub-banner -->
+<div class="mt-space-md pt-space-sm flex flex-wrap items-center justify-between gap-space-sm font-label-md text-label-md text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-error">alarm</span>
+<span>Registration Deadline: <strong class="text-on-surface font-semibold">Oct 28, 2024, 11:59 PM IST</strong></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">terminal</span>
+<span>Online Assessment: <strong class="text-on-surface font-semibold">Nov 02, 2024 (09:00 AM IST)</strong></span>
+</div>
+</div>
+</div>
+<!-- Eligibility Engine Rule Parameters -->
+<div class="lg:col-span-5 bg-surface-container rounded-xl p-space-md flex flex-col justify-between">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">rule</span>
+<span class="font-headline-sm text-headline-sm text-primary">Automated Policy Matrix</span>
+</div>
+<span class="px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">
+            Locked by Dean
+          </span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs mt-space-xs">
+<div class="p-space-xs bg-surface-container-lowest rounded-lg flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Min 10th Standard</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">≥ 75.00%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Central/State Board</span>
+</div>
+<div class="p-space-xs bg-surface-container-lowest rounded-lg flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Min 12th Std (HSC)</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">≥ 80.00%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Regular stream only</span>
+</div>
+<div class="p-space-xs bg-surface-container-lowest rounded-lg flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Min D2D Lateral CGPA</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">≥ 8.50 CGPA</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Polytechnic Equiv.</span>
+</div>
+<div class="p-space-xs bg-surface-container-lowest rounded-lg flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Min B.Tech Aggregate</span>
+<span class="font-headline-sm text-headline-sm text-primary font-bold">≥ 8.00 CGPA</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Up to Sem VI audited</span>
+</div>
+</div>
+<div class="mt-space-xs pt-space-xs flex flex-col gap-1">
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Backlog Allowance:</span>
+<span class="font-semibold text-error flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">block</span>
+              0 Active Backlogs (Strict)
+            </span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Eligible Cohorts:</span>
+<div class="flex items-center gap-1">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high font-label-sm text-label-sm text-on-surface font-medium">CSE</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high font-label-sm text-label-sm text-on-surface font-medium">IT</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high font-label-sm text-label-sm text-on-surface font-medium">AI &amp; DS</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Real-Time Drive Metrics Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-space-md">
+<!-- Metric 1: Total Batch -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Eligible Cohort Base</span>
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">groups</span>
+</div>
+<div class="mt-space-sm flex flex-col">
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold">1,248</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">AY 2024-25 Final Year</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-space-sm overflow-hidden">
+<div class="bg-outline h-full w-full"></div>
+</div>
+</div>
+<!-- Metric 2: Eligible -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Eligible Students</span>
+<span class="material-symbols-outlined text-[20px] text-tertiary">check_circle</span>
+</div>
+<div class="mt-space-sm flex flex-col">
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-lg text-headline-lg text-tertiary-container font-bold">312</span>
+<span class="font-label-md text-label-md text-tertiary font-semibold">(25.0%)</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cleared All 5 Gate Rules</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-space-sm overflow-hidden">
+<div class="bg-tertiary-container h-full w-1/4"></div>
+</div>
+</div>
+<!-- Metric 3: Ineligible -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Ineligible Filtered</span>
+<span class="material-symbols-outlined text-[20px] text-error">cancel</span>
+</div>
+<div class="mt-space-sm flex flex-col">
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-lg text-headline-lg text-error font-bold">936</span>
+<span class="font-label-md text-label-md text-error font-semibold">(75.0%)</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Blocked by Policy Constraints</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-space-sm overflow-hidden">
+<div class="bg-error h-full w-3/4"></div>
+</div>
+</div>
+<!-- Metric 4: Applications Submitted -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Applied / Eligible</span>
+<span class="material-symbols-outlined text-[20px] text-secondary">mark_email_read</span>
+</div>
+<div class="mt-space-sm flex flex-col">
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-lg text-headline-lg text-primary font-bold">240</span>
+<span class="font-label-md text-label-md text-on-surface-variant">/ 312</span>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary font-semibold">76.9% Application Velocity</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-space-sm overflow-hidden">
+<div class="bg-secondary-container h-full" style="width: 76.9%;"></div>
+</div>
+</div>
+<!-- Metric 5: OA Shortlist Candidate Roster -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Shortlisted for OA</span>
+<span class="material-symbols-outlined text-[20px] text-primary">psychology</span>
+</div>
+<div class="mt-space-sm flex flex-col">
+<span class="font-headline-lg text-headline-lg text-primary font-bold">110</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Slot 1 Hall Tickets Dispatched</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-space-sm overflow-hidden">
+<div class="bg-primary h-full w-[35%]"></div>
+</div>
+</div>
+</div>
+<!-- Dual-Tab Filtering Engine & Candidate Ledger -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm flex flex-col overflow-hidden">
+<!-- Tab Header Bar with Search & Quick Filters -->
+<div class="p-space-md bg-surface-container-lowest flex flex-col md:flex-row md:items-center justify-between gap-space-md shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+<!-- Interactive Tabs -->
+<div class="inline-flex p-1 rounded-lg bg-surface-container" id="drive-tabs">
+<button class="px-space-md py-1.5 rounded-lg font-label-md text-label-md bg-surface-container-lowest text-primary shadow-sm font-semibold flex items-center gap-1.5 transition-all" id="tab-btn-eligible" onclick="switchDriveTab('eligible')" type="button">
+<span class="material-symbols-outlined text-[18px] text-tertiary-container">verified</span>
+            Eligible Students
+            <span class="px-1.5 py-0.2 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">312</span>
+</button>
+<button class="px-space-md py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface flex items-center gap-1.5 transition-all" id="tab-btn-ineligible" onclick="switchDriveTab('ineligible')" type="button">
+<span class="material-symbols-outlined text-[18px] text-error">rule_folder</span>
+            Ineligible Students with Reasons
+            <span class="px-1.5 py-0.2 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">936</span>
+</button>
+<button class="px-space-md py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface flex items-center gap-1.5 transition-all" id="tab-btn-ledger" onclick="switchDriveTab('ledger')" type="button">
+<span class="material-symbols-outlined text-[18px]">how_to_reg</span>
+            Applications Ledger
+            <span class="px-1.5 py-0.2 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">240</span>
+</button>
+</div>
+<!-- Filter Controls -->
+<div class="flex flex-wrap items-center gap-space-xs">
+<!-- Quick Search -->
+<div class="relative min-w-[240px]">
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 text-[18px] text-outline">search</span>
+<input class="w-full pl-8 pr-3 py-1.5 rounded-lg bg-surface-container-low text-on-surface placeholder:text-outline text-body-sm font-body-sm outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary transition-all" id="candidate-search" placeholder="Search Roll No, Name..." type="text"/>
+</div>
+<!-- Branch Dropdown -->
+<div class="flex items-center">
+<select class="px-space-sm py-1.5 rounded-lg bg-surface-container-low text-on-surface text-body-sm font-body-sm outline-none focus:bg-surface-container-lowest cursor-pointer">
+<option value="all">All Branches (CSE, IT, AI&amp;DS)</option>
+<option value="cse">Computer Science &amp; Engg</option>
+<option value="it">Information Technology</option>
+<option value="aids">AI &amp; Data Science</option>
+</select>
+</div>
+<!-- Status Toggle Filter -->
+<div class="flex items-center bg-surface-container-low p-0.5 rounded-lg font-label-sm text-label-sm">
+<button class="px-2.5 py-1 rounded bg-surface-container-lowest text-on-surface font-semibold shadow-xs" type="button">All</button>
+<button class="px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface" type="button">Applied (240)</button>
+<button class="px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface" type="button">Not Applied (72)</button>
+</div>
+</div>
+</div>
+<!-- TAB 1: ELIGIBLE STUDENTS VIEW -->
+<div class="flex flex-col" id="tab-content-eligible">
+<!-- Mass Action Sub-Bar -->
+<div class="px-space-md py-2 bg-surface-container-low flex flex-wrap items-center justify-between text-body-sm font-body-sm">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Showing 312 Eligible Candidates</span>
+<span class="text-outline">•</span>
+<span class="text-tertiary-container font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+              All Verified Profiles Frozen for Google Cloud Drive
+            </span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1 rounded bg-surface-container-lowest text-secondary font-label-sm text-label-sm font-semibold hover:bg-surface-container transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[14px]">notification_important</span>
+              Send Nudge to 72 Unapplied
+            </button>
+<button class="px-space-sm py-1 rounded bg-surface-container-lowest text-primary font-label-sm text-label-sm font-semibold hover:bg-surface-container transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[14px]">checklist</span>
+              Mark All OA Shortlist
+            </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-3 px-space-md font-semibold">Student / Roll ID</th>
+<th class="py-3 px-space-md font-semibold">Dept &amp; Section</th>
+<th class="py-3 px-space-md font-semibold text-right">10th Std (≥75%)</th>
+<th class="py-3 px-space-md font-semibold text-right">12th / D2D</th>
+<th class="py-3 px-space-md font-semibold text-right">B.Tech CGPA (≥8.00)</th>
+<th class="py-3 px-space-md font-semibold text-center">Active Backlogs</th>
+<th class="py-3 px-space-md font-semibold text-center">Drive Status</th>
+<th class="py-3 px-space-md font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container text-body-sm font-body-sm">
+<!-- Student 1 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Professional Indian collegiate engineering student portrait headshot female clean natural lighting student ID card format" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdi7lVp_4A9M1DOBpyreIlJzkJmSw69VEf_wHaq4I5aiS3EAHC8ovC5-_VpXL-S58ilQahvzwF3S2KGaHK1rvIVlq7in5NIeZCeunhZTBlS1q4EN0YV_IB9Ka_BcgR_uOxNdH8pnPJzk7LU_KALiP3jR0fx8MinSyYHaMWQB7DNMC-if0MasYim0ahOIJEZjhyl4WDgpmJiZaw6PR8M9Dd2sOhhI1STI_znSfafFIJX95EomUCGg0s"/>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Ananya Iyer</span>
+<span class="font-data-tabular text-data-tabular text-on-surface-variant">21BCSE104</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="text-on-surface font-medium">B.Tech CSE</span>
+<span class="text-outline text-label-sm">Sec A • Regular</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right font-data-tabular">
+<span class="text-tertiary-container font-semibold">92.40%</span>
+<span class="material-symbols-outlined text-[14px] text-tertiary align-middle ml-0.5">check</span>
+</td>
+<td class="py-3 px-space-md text-right font-data-tabular">
+<span class="text-tertiary-container font-semibold">91.80% (12th)</span>
+<span class="material-symbols-outlined text-[14px] text-tertiary align-middle ml-0.5">check</span>
+</td>
+<td class="py-3 px-space-md text-right font-data-tabular">
+<span class="text-tertiary-container font-bold text-base">9.42</span>
+<span class="material-symbols-outlined text-[14px] text-tertiary align-middle ml-0.5">check</span>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">0 Nil</span>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
+                    OA Shortlisted
+                  </span>
+</td>
+<td class="py-3 px-space-md text-right">
+<button class="p-1 rounded text-primary hover:bg-surface-container" title="Candidate Dossier" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container" title="Direct Email" type="button">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</button>
+</td>
+</tr>
+<!-- Student 2 (D2D Lateral Entry) -->
+<tr class="hover:bg-surface-container-low transition-colors bg-surface-container-lowest">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Indian male engineering student portrait modern clean background natural collegiate ID photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEZ_h9bgsy4bZUy0aEBjjoOzpvgtfGAqlGXVw_A7-OEQIsqymk1lLptEqG6nR-0zVLCkfRhps25xeaJ8BvEnsqvucYmTrNoDVIeaG7tZrBfY4Iq81e7KGh5xkNq-j_OdTGaoxfBUEVqFJoVZLJQ68o07t7qyer7HnP44g6nZgdTZkxDBhJayaVfqRNNkc_cRfx6AxmCqDFYaoKrpfJqmm2Vf5xBJRrdlAPdG-94lx7xw5QEviT_q0h"/>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-semibold text-on-surface">Karthik Pandian</span>
+<span class="px-1 py-0.2 rounded bg-surface-container-high font-label-sm text-label-sm text-primary font-bold">D2D</span>
+</div>
+<span class="font-data-tabular text-data-tabular text-on-surface-variant">22BITL014</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="text-on-surface font-medium">B.Tech IT</span>
+<span class="text-outline text-label-sm">Sec B • Lateral Entry</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right font-data-tabular">
+<span class="text-tertiary-container font-semibold">84.20%</span>
+<span class="material-symbols-outlined text-[14px] text-tertiary align-middle ml-0.5">check</span>
+</td>
+<td class="py-3 px-space-md text-right font-data-tabular">
+<span class="text-tertiary-container font-semibold">8.94 (D2D CGPA)</span>
+<span class="material-symbols-outlined text-[14px] text-tertiary align-middle ml-0.5">check</span>
+</td>
+<td class="py-3 px-space-md text-right font-data-tabular">
+<span class="text-tertiary-container font-bold text-base">8.68</span>
+<span class="material-symbols-outlined text-[14px] text-tertiary align-middle ml-0.5">check</span>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">0 Nil</span>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">
+                    Application Filed
+                  </span>
+</td>
+<td class="py-3 px-space-md text-right">
+<button class="p-1 rounded text-primary hover:bg-surface-container" title="Candidate Dossier" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container" title="Direct Email" type="button">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</button>
+</td>
+</tr>
+<!-- Student 3 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Indian female computer science researcher student portrait photo smart collegiate style bright neutral university studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAs8wUCCebG14xEJkbC2b8y7AZ_JE12V1pBWYfwsga-HQ0_Dn3ggSAOQLFpnK6DttcuTcnWAkMIXSQDBSy-rpM1WrD0PyKR_6NYhMFSU0TdGPg9qLDl2vjZKVB6iLRYaIEBHnUI-bDcVC6MB8Y-nLjnOlpdVKWZsdn6ab1MG-tEbZqpBvEiBlTaleadZJmIPqvTcZzbXnjXRhsA00xvIzl-XOdvB7f-kn2m9n699kvCxdd7j8gqgmVH"/>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Divya Deshmukh</span>
+<span class="font-data-tabular text-data-tabular text-on-surface-variant">21BAI022</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="text-on-surface font-medium">B.Tech AI &amp; DS</span>
+<span class="text-outline text-label-sm">Sec A • Regular</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right font-data-tabular">
+<span class="text-tertiary-container font-semibold">88.60%</span>
+<span class="material-symbols-outlined text-[14px] text-tertiary align-middle ml-0.5">check</span>
+</td>
+<td class="py-3 px-space-md text-right font-data-tabular">
+<span class="text-tertiary-container font-semibold">89.20% (12th)</span>
+<span class="material-symbols-outlined text-[14px] text-tertiary align-middle ml-0.5">check</span>
+</td>
+<td class="py-3 px-space-md text-right font-data-tabular">
+<span class="text-tertiary-container font-bold text-base">8.82</span>
+<span class="material-symbols-outlined text-[14px] text-tertiary align-middle ml-0.5">check</span>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">0 Nil</span>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+                    Not Applied
+                  </span>
+</td>
+<td class="py-3 px-space-md text-right">
+<button class="px-2 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold hover:bg-secondary-fixed-dim transition-colors" type="button">
+                    Nudge
+                  </button>
+<button class="p-1 rounded text-primary hover:bg-surface-container" title="Candidate Dossier" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- TAB 2: INELIGIBLE STUDENTS VIEW WITH DETERMINISTIC REASON ENGINE -->
+<div class="hidden flex-col" id="tab-content-ineligible">
+<!-- Audit Policy Note Banner -->
+<div class="px-space-md py-2.5 bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-sm text-body-sm font-body-sm">
+<span class="material-symbols-outlined text-error text-[18px]">policy</span>
+<span class="text-on-surface">Deterministic Criteria Auditor: Showing exact bottleneck parameter for all <strong>936 disqualified records</strong>.</span>
+</div>
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm text-on-surface-variant">
+<span class="inline-block w-2.5 h-2.5 rounded bg-error-container"></span>
+<span>Non-Overridable</span>
+<span class="inline-block w-2.5 h-2.5 rounded bg-surface-container-highest ml-2"></span>
+<span>Grievance Appeal Open (48h)</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-3 px-space-md font-semibold">Student / Roll ID</th>
+<th class="py-3 px-space-md font-semibold">Branch &amp; Route</th>
+<th class="py-3 px-space-md font-semibold text-right">Academic Profile Scores</th>
+<th class="py-3 px-space-md font-semibold">Deterministic Ineligibility Bottleneck</th>
+<th class="py-3 px-space-md font-semibold text-center">Grievance Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container text-body-sm font-body-sm">
+<!-- Ineligible Student 1: 12th Marks Below -->
+<tr class="hover:bg-surface-container-low transition-colors bg-surface-container-lowest">
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center font-bold text-on-surface-variant text-label-md">
+                      SV
+                    </div>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Siddharth Verma</span>
+<span class="font-data-tabular text-data-tabular text-on-surface-variant">21BCSE088</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="text-on-surface font-medium">B.Tech CSE</span>
+<span class="text-outline text-label-sm">Regular 12th</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right font-data-tabular">
+<div class="flex flex-col items-end gap-0.5 text-label-sm">
+<span class="text-on-surface">10th: <strong>78.00%</strong> (Pass)</span>
+<span class="text-error font-semibold">12th: 74.00% (Fail)</span>
+<span class="text-on-surface">Engg CGPA: <strong>8.40</strong> (Pass)</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-error-container text-on-error-container font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-error">cancel</span>
+<span>12th marks <strong>74.00%</strong> is below required <strong>80.00%</strong></span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container-high transition-colors" type="button">
+                    Log Grievance
+                  </button>
+</td>
+</tr>
+<!-- Ineligible Student 2: 10th Marks Below -->
+<tr class="hover:bg-surface-container-low transition-colors bg-surface-container-lowest">
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center font-bold text-on-surface-variant text-label-md">
+                      MN
+                    </div>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Meera Nair</span>
+<span class="font-data-tabular text-data-tabular text-on-surface-variant">21BIT054</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="text-on-surface font-medium">B.Tech IT</span>
+<span class="text-outline text-label-sm">Regular 12th</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right font-data-tabular">
+<div class="flex flex-col items-end gap-0.5 text-label-sm">
+<span class="text-error font-semibold">10th: 72.00% (Fail)</span>
+<span class="text-on-surface">12th: <strong>84.00%</strong> (Pass)</span>
+<span class="text-on-surface">Engg CGPA: <strong>8.65</strong> (Pass)</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-error-container text-on-error-container font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-error">cancel</span>
+<span>10th marks <strong>72.00%</strong> is below required <strong>75.00%</strong></span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container-high transition-colors" type="button">
+                    Log Grievance
+                  </button>
+</td>
+</tr>
+<!-- Ineligible Student 3: D2D Lateral Entry CGPA Shortfall -->
+<tr class="hover:bg-surface-container-low transition-colors bg-surface-container-lowest">
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center font-bold text-on-surface-variant text-label-md">
+                      VR
+                    </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1">
+<span class="font-semibold text-on-surface">Vikas Rathore</span>
+<span class="px-1 py-0.2 rounded bg-surface-container font-label-sm text-label-sm text-primary font-bold">D2D</span>
+</div>
+<span class="font-data-tabular text-data-tabular text-on-surface-variant">22BCSEL009</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="text-on-surface font-medium">B.Tech CSE</span>
+<span class="text-outline text-label-sm">D2D Lateral Entry</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right font-data-tabular">
+<div class="flex flex-col items-end gap-0.5 text-label-sm">
+<span class="text-on-surface">10th: <strong>80.00%</strong> (Pass)</span>
+<span class="text-error font-semibold">D2D CGPA: 8.10 (Fail)</span>
+<span class="text-on-surface">Engg CGPA: <strong>8.35</strong> (Pass)</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-error-container text-on-error-container font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-error">cancel</span>
+<span>D2D Diploma CGPA <strong>8.10</strong> is below required <strong>8.50</strong></span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-center">
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+                    Audited
+                  </span>
+</td>
+</tr>
+<!-- Ineligible Student 4: Engineering CGPA Cutoff Shortfall -->
+<tr class="hover:bg-surface-container-low transition-colors bg-surface-container-lowest">
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center font-bold text-on-surface-variant text-label-md">
+                      TJ
+                    </div>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Tanvi Jain</span>
+<span class="font-data-tabular text-data-tabular text-on-surface-variant">21BAI067</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="text-on-surface font-medium">B.Tech AI &amp; DS</span>
+<span class="text-outline text-label-sm">Regular 12th</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right font-data-tabular">
+<div class="flex flex-col items-end gap-0.5 text-label-sm">
+<span class="text-on-surface">10th: <strong>82.00%</strong> (Pass)</span>
+<span class="text-on-surface">12th: <strong>85.00%</strong> (Pass)</span>
+<span class="text-error font-semibold">Engg CGPA: 7.78 (Fail)</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-error-container text-on-error-container font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-error">cancel</span>
+<span>Engineering CGPA <strong>7.78</strong> is below required <strong>8.00</strong></span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container-high transition-colors" type="button">
+                    Log Grievance
+                  </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- TAB 3: APPLICATIONS LEDGER VIEW -->
+<div class="hidden flex-col p-space-lg" id="tab-content-ledger">
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-space-md gap-2">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Google Cloud Portal Sync Ledger</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">240 Applications received. Synced with corporate recruiter ATS via CareerLink API v3.</p>
+</div>
+<button class="px-space-sm py-1.5 rounded-lg bg-secondary text-on-secondary font-label-md text-label-md flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+            Force Re-Sync with Google ATS
+          </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<div class="p-space-md bg-surface-container-low rounded-xl flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Stage 1: Profile Verified</span>
+<span class="font-headline-lg text-headline-lg text-primary font-bold">240</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">100% Student declarations signed &amp; confirmed.</span>
+</div>
+<div class="p-space-md bg-surface-container-low rounded-xl flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Stage 2: OA Slot Booked</span>
+<span class="font-headline-lg text-headline-lg text-secondary font-bold">110</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Slots scheduled across Computer Lab Alpha &amp; Beta.</span>
+</div>
+<div class="p-space-md bg-surface-container-low rounded-xl flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Stage 3: Pending TPO Sign-off</span>
+<span class="font-headline-lg text-headline-lg text-on-surface-variant font-bold">130</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Awaiting Batch 2 hall-ticket dispatch confirmation.</span>
+</div>
+</div>
+</div>
+<!-- Pagination & Audit Footer -->
+<div class="p-space-md bg-surface-container-lowest flex flex-wrap items-center justify-between gap-space-sm text-body-sm font-body-sm text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span>Rows per page:</span>
+<select class="bg-surface-container-low rounded px-2 py-0.5 font-label-sm text-label-sm outline-none">
+<option>25</option>
+<option>50</option>
+<option>100</option>
+</select>
+<span class="text-outline">|</span>
+<span>Showing 1 to 4 of cohort segment</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded hover:bg-surface-container text-outline" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]">first_page</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container text-outline" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<span class="px-2 font-label-sm text-label-sm font-semibold text-on-surface">Page 1 of 1</span>
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant" type="button">
+<span class="material-symbols-outlined text-[18px]">last_page</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Dynamic Tab Switching Micro-Interaction Logic -->
+<script>
+    function switchDriveTab(tabName) {
+      const tabs = ['eligible', 'ineligible', 'ledger'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('tab-btn-' + t);
+        const content = document.getElementById('tab-content-' + t);
+        if (t === tabName) {
+          btn.className = 'px-space-md py-1.5 rounded-lg font-label-md text-label-md bg-surface-container-lowest text-primary shadow-sm font-semibold flex items-center gap-1.5 transition-all';
+          content.classList.remove('hidden');
+          content.classList.add('flex');
+        } else {
+          btn.className = 'px-space-md py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface flex items-center gap-1.5 transition-all';
+          content.classList.add('hidden');
+          content.classList.remove('flex');
+        }
+      });
+    }
+
+    // Interactive Search filtering on table rows
+    const searchInput = document.getElementById('candidate-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase();
+        const activeTable = document.querySelector('#tab-content-eligible:not(.hidden) tbody, #tab-content-ineligible:not(.hidden) tbody');
+        if (activeTable) {
+          const rows = activeTable.querySelectorAll('tr');
+          rows.forEach(r => {
+            const text = r.innerText.toLowerCase();
+            r.style.display = text.includes(query) ? '' : 'none';
+          });
+        }
+      });
+    }
+  </script>
+</div></main></div></body></html>

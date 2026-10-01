@@ -1,0 +1,302 @@
+// Reference Schema for Mini Placement Portal Database
+// Keep synchronized with apps/api/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  TPO
+}
+
+enum StudentType {
+  REGULAR
+  D2D
+}
+
+enum ProfileStatus {
+  DRAFT
+  LOCKED
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum ApplicationStatus {
+  APPLIED
+  UNDER_REVIEW
+  SHORTLISTED
+  REJECTED
+  SELECTED
+}
+
+enum DriveType {
+  FULL_TIME
+  INTERNSHIP
+  INTERN_PLUS_FTE
+}
+
+enum DriveStatus {
+  UPCOMING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  SMS
+}
+
+enum NotificationDeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  role         Role
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  studentProfile         StudentProfile?
+  tpoProfile             TpoProfile?
+  verificationsConducted Verification[]  @relation("TpoVerifications")
+
+  @@index([email])
+  @@index([role])
+}
+
+model StudentProfile {
+  id                 String             @id @default(uuid())
+  userId             String             @unique
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studentType        StudentType        @default(REGULAR)
+  enrollmentNumber   String             @unique
+  firstName          String
+  middleName         String?
+  lastName           String
+  department         String
+  batchYear          Int
+  currentSemester    Int                @default(7)
+  currentCgpa        Decimal            @db.Decimal(4, 2)
+  activeBacklogs     Int                @default(0)
+  totalBacklogs      Int                @default(0)
+  phone              String?
+  dateOfBirth        DateTime?
+  gender             String?
+  address            String?
+  skills             Json?
+  resumeUrl          String?
+  resumeName         String?
+  resumeUpdatedAt    DateTime?
+  status             ProfileStatus      @default(DRAFT)
+  lockedAt           DateTime?
+  verificationStatus VerificationStatus @default(PENDING)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  tenthMarks     TenthMarks?
+  twelfthDetails TwelfthDetails?
+  d2dDetails     D2DDetails?
+  applications   Application[]
+  verifications  Verification[]
+  notifications  Notification[]
+  deliveryLogs   NotificationDeliveryLog[]
+
+  @@index([enrollmentNumber])
+  @@index([department, batchYear])
+  @@index([status])
+  @@index([verificationStatus])
+}
+
+model TenthMarks {
+  id               String         @id @default(uuid())
+  studentProfileId String         @unique
+  studentProfile   StudentProfile @relation(fields: [studentProfileId], references: [id], onDelete: Cascade)
+  board            String
+  schoolName       String
+  passingYear      Int
+  marksObtained    Decimal        @db.Decimal(6, 2)
+  totalMarks       Decimal        @db.Decimal(6, 2)
+  percentage       Decimal        @db.Decimal(5, 2)
+  subjectWiseMarks Json
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model TwelfthDetails {
+  id               String         @id @default(uuid())
+  studentProfileId String         @unique
+  studentProfile   StudentProfile @relation(fields: [studentProfileId], references: [id], onDelete: Cascade)
+  board            String
+  schoolName       String
+  passingYear      Int
+  stream           String
+  marksObtained    Decimal        @db.Decimal(6, 2)
+  totalMarks       Decimal        @db.Decimal(6, 2)
+  percentage       Decimal        @db.Decimal(5, 2)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model D2DDetails {
+  id                String         @id @default(uuid())
+  studentProfileId  String         @unique
+  studentProfile    StudentProfile @relation(fields: [studentProfileId], references: [id], onDelete: Cascade)
+  diplomaCollege    String
+  diplomaUniversity String
+  diplomaBranch     String
+  passingYear       Int
+  diplomaCgpa       Decimal        @db.Decimal(4, 2)
+  diplomaPercentage Decimal?       @db.Decimal(5, 2)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}
+
+model TpoProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName    String
+  designation String
+  department  String?
+  phone       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Company {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  website       String?
+  industry      String?
+  description   String?
+  logoUrl       String?
+  contactPerson String?
+  contactEmail  String?
+  contactPhone  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  recruitmentDrives RecruitmentDrive[]
+
+  @@index([name])
+}
+
+model RecruitmentDrive {
+  id                           String        @id @default(uuid())
+  companyId                    String
+  company                      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  title                        String
+  jobRole                      String
+  driveType                    DriveType     @default(FULL_TIME)
+  status                       DriveStatus   @default(ACTIVE)
+  packageLpa                   Decimal?      @db.Decimal(6, 2)
+  stipendMonthly               Decimal?      @db.Decimal(10, 2)
+  location                     String?
+  description                  String?
+  deadline                     DateTime
+  driveDate                    DateTime?
+  requiredSkills               String[]      @default([])
+  minCgpa                      Decimal       @default(0.00) @db.Decimal(4, 2)
+  minTenthPercentage           Decimal       @default(0.00) @db.Decimal(5, 2)
+  minTwelfthOrDiplomaPercentage Decimal      @default(0.00) @db.Decimal(5, 2)
+  maxActiveBacklogs            Int           @default(0)
+  allowedStudentTypes          StudentType[]
+  allowedDepartments           String[]
+  createdAt                    DateTime      @default(now())
+  updatedAt                    DateTime      @updatedAt
+
+  applications Application[]
+
+  @@index([companyId])
+  @@index([status])
+  @@index([deadline])
+}
+
+model Application {
+  id                 String            @id @default(uuid())
+  studentProfileId   String
+  studentProfile     StudentProfile    @relation(fields: [studentProfileId], references: [id], onDelete: Cascade)
+  recruitmentDriveId String
+  recruitmentDrive   RecruitmentDrive  @relation(fields: [recruitmentDriveId], references: [id], onDelete: Cascade)
+  status             ApplicationStatus @default(APPLIED)
+  appliedAt          DateTime          @default(now())
+  notes              String?
+  updatedAt          DateTime          @updatedAt
+
+  @@unique([studentProfileId, recruitmentDriveId])
+  @@index([studentProfileId])
+  @@index([recruitmentDriveId])
+  @@index([status])
+}
+
+model Verification {
+  id                 String             @id @default(uuid())
+  studentProfileId   String
+  studentProfile     StudentProfile     @relation(fields: [studentProfileId], references: [id], onDelete: Cascade)
+  verifiedByUserId   String
+  verifiedByUser     User               @relation("TpoVerifications", fields: [verifiedByUserId], references: [id])
+  status             VerificationStatus
+  remarks            String?
+  verifiedAt         DateTime           @default(now())
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([studentProfileId])
+  @@index([verifiedByUserId])
+  @@index([status])
+}
+
+model Notification {
+  id               String         @id @default(uuid())
+  studentProfileId String
+  studentProfile   StudentProfile @relation(fields: [studentProfileId], references: [id], onDelete: Cascade)
+  title            String
+  message          String
+  type             String         @default("INFO")
+  isRead           Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+
+  @@index([studentProfileId])
+  @@index([isRead])
+}
+
+model NotificationDeliveryLog {
+  id               String                     @id @default(uuid())
+  studentProfileId String?
+  recipientEmail   String?
+  recipientPhone   String?
+  channel          NotificationChannel        @default(EMAIL)
+  status           NotificationDeliveryStatus @default(PENDING)
+  template         String
+  subject          String
+  body             String
+  idempotencyKey   String?                    @unique
+  error            String?
+  sentAt           DateTime?
+  createdAt        DateTime                   @default(now())
+
+  studentProfile   StudentProfile?            @relation(fields: [studentProfileId], references: [id], onDelete: SetNull)
+
+  @@index([recipientEmail])
+  @@index([channel, status])
+  @@index([template])
+  @@index([idempotencyKey])
+}
+
