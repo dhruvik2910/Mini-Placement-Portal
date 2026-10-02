@@ -1,5 +1,16 @@
 {
-  "buildCommand": "npm run build:shared && npm run build:web",
+  "version": 2,
+  "buildCommand": "npm run prisma:generate && npm run build:shared && npm run build:web",
   "outputDirectory": "apps/web/.next",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "rewrites": [
+    {
+      "source": "/api/v1/:path*",
+      "destination": "/api"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "/api"
+    }
+  ]
 }

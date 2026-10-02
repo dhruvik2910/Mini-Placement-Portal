@@ -385,7 +385,7 @@ export interface TpoAnalyticsDto {
 }
 
 /**
- * Audit log entry for outbox notifications (Email / SMS / WhatsApp / In-App)
+ * Audit log entry for outbox notifications (Email / SMS / In-App)
  */
 export interface NotificationDeliveryLogDto {
   id: string;
@@ -403,74 +403,51 @@ export interface NotificationDeliveryLogDto {
   createdAt: string;
 }
 
-/**
- * Request DTO for Instant Interview Alerts (WhatsApp, SMS, Email)
- */
 export interface SendInterviewAlertDto {
   applicationIds: string[];
+  channels: NotificationChannel[];
+  companyName: string;
   roundName: string;
   scheduleTime: string;
   venue: string;
-  channels: NotificationChannel[];
   customNote?: string;
 }
 
-/**
- * Result DTO for Instant Interview Alerts
- */
 export interface SendInterviewAlertResultDto {
-  totalTargeted?: number;
+  success: boolean;
   dispatchedCount: number;
   channelsUsed: NotificationChannel[];
-  details?: Array<{
+  timestamp: string;
+  details: Array<{
     applicationId: string;
     studentName: string;
-    phone?: string | null;
-    email?: string;
-    whatsappStatus?: string;
-    smsStatus?: string;
-    emailStatus?: string;
-    delivered?: boolean;
-    enrollmentNumber?: string;
+    enrollmentNumber: string;
+    channels: Array<{
+      channel: NotificationChannel;
+      success: boolean;
+      messageId?: string;
+      error?: string;
+    }>;
   }>;
 }
 
-/**
- * Gateway Provider status overview
- */
 export interface GatewayStatusDto {
-  provider: string;
-  whatsappEnabled: boolean;
-  smsEnabled: boolean;
-  emailEnabled: boolean;
-  supportedGateways: string[];
-  environment: string;
+  twilioConfigured: boolean;
+  smsAvailable: boolean;
+  whatsappAvailable: boolean;
+  senderPhone?: string;
+  whatsappFrom?: string;
 }
 
-/**
- * Test Gateway Request DTO
- */
 export interface TestGatewayRequestDto {
   channel: NotificationChannel;
-  recipient: string; // phone or email
-  message?: string;
+  recipientPhone: string;
+  message: string;
 }
 
-export interface TestGatewayResultDto {
-  success: boolean;
-  channel: NotificationChannel;
-  recipient: string;
-  messageId?: string;
-  provider: string;
-  error?: string;
-}
-
-/**
- * AI-powered resume and job description match score & tailored recommendations
- */
 export interface AiJobFitScoreDto {
   matchScore: number;
-  verdict: 'STRONG_MATCH' | 'MODERATE_MATCH' | 'GROWTH_OPPORTUNITY';
+  verdict: string;
   summary: string;
   matchingSkills: string[];
   missingSkills: string[];
@@ -479,5 +456,9 @@ export interface AiJobFitScoreDto {
   recommendations: string[];
   analyzedAt: string;
   isAiGenerated: boolean;
-  modelUsed?: string;
+  modelUsed: string;
 }
+
+
+
+
