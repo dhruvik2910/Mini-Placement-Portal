@@ -460,7 +460,7 @@ export function getApplicantRejectedWhatsApp({
   const portalUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
   const message =
     `ℹ️ *[LDCE Placements] Application Update: ${companyName}*\n\n` +
-    `Hello *${firstName}*,\n\n` +
+    `Hello *${firstName}* (Roll: ${enrollmentNumber}),\n\n` +
     `Thank you for participating in the placement drive for *${companyName}* (${jobRole}). ` +
     `While you were not selected in this cycle, multiple new recruitment drives are actively accepting applications.\n\n` +
     `🔗 *Explore Active Drives:* ${portalUrl}/drives\n\n` +
@@ -471,6 +471,7 @@ export function getApplicantRejectedWhatsApp({
     templateName: 'ldce_applicant_rejected',
     templateParams: {
       student_name: firstName,
+      enrollment_number: enrollmentNumber,
       company_name: companyName,
       portal_link: `${portalUrl}/drives`,
     },

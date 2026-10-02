@@ -67,12 +67,15 @@ export class WhatsAppNotificationProvider {
           }),
         });
 
-        const data = await res.json().catch(() => ({}));
+        const data = (await res.json().catch(() => ({}))) as {
+          error?: { message?: string };
+          messages?: Array<{ id?: string }>;
+        };
         if (!res.ok) {
-          throw new Error((data as any)?.error?.message || `Meta API Error (${res.status})`);
+          throw new Error(data?.error?.message || `Meta API Error (${res.status})`);
         }
 
-        const messageId = (data as any)?.messages?.[0]?.id || `meta-${Date.now()}`;
+        const messageId = data?.messages?.[0]?.id || `meta-${Date.now()}`;
         console.log(`[WHATSAPP CLOUD API] 💬 Message sent to ${formattedPhone} [ID: ${messageId}]`);
 
         return {
@@ -81,11 +84,12 @@ export class WhatsAppNotificationProvider {
           timestamp,
           provider: this.name,
         };
-      } catch (err: any) {
-        console.error(`[WHATSAPP CLOUD API] ❌ Error sending to ${payload.to}:`, err.message);
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : 'Meta WhatsApp API error';
+        console.error(`[WHATSAPP CLOUD API] ❌ Error sending to ${payload.to}:`, errorMsg);
         return {
           success: false,
-          error: err.message,
+          error: errorMsg,
           timestamp,
           provider: this.name,
         };
@@ -115,12 +119,12 @@ export class WhatsAppNotificationProvider {
           body: params.toString(),
         });
 
-        const data = await res.json().catch(() => ({}));
+        const data = (await res.json().catch(() => ({}))) as { message?: string; sid?: string };
         if (!res.ok) {
-          throw new Error((data as any)?.message || `Twilio Error (${res.status})`);
+          throw new Error(data?.message || `Twilio Error (${res.status})`);
         }
 
-        const messageId = (data as any)?.sid || `twilio-${Date.now()}`;
+        const messageId = data?.sid || `twilio-${Date.now()}`;
         console.log(`[TWILIO WHATSAPP] 💬 Message sent to ${toWhatsApp} [ID: ${messageId}]`);
 
         return {
@@ -129,11 +133,12 @@ export class WhatsAppNotificationProvider {
           timestamp,
           provider: this.name,
         };
-      } catch (err: any) {
-        console.error(`[TWILIO WHATSAPP] ❌ Error sending to ${payload.to}:`, err.message);
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : 'Twilio WhatsApp error';
+        console.error(`[TWILIO WHATSAPP] ❌ Error sending to ${payload.to}:`, errorMsg);
         return {
           success: false,
-          error: err.message,
+          error: errorMsg,
           timestamp,
           provider: this.name,
         };

@@ -79,7 +79,7 @@ export class WhatsAppCloudNotificationProvider implements INotificationProvider 
         body: JSON.stringify(requestBody),
       });
 
-      const data: any = await res.json();
+      const data = (await res.json()) as { error?: { message?: string }; messages?: Array<{ id?: string }> };
 
       if (!res.ok || data.error) {
         const errorMsg = data?.error?.message || `WhatsApp Cloud API HTTP ${res.status}`;
@@ -99,11 +99,12 @@ export class WhatsAppCloudNotificationProvider implements INotificationProvider 
         messageId,
         timestamp,
       };
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(`[WHATSAPP CLOUD API] ❌ Network error:`, err);
+      const errorMsg = err instanceof Error ? err.message : 'WhatsApp Cloud API network exception';
       return {
         success: false,
-        error: err?.message || 'WhatsApp Cloud API network exception',
+        error: errorMsg,
         timestamp,
       };
     }

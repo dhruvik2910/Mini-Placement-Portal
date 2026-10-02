@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database';
+import { Prisma, RecruitmentDrive } from '@prisma/client';
 import { AppError } from '../../common/errors/app-error';
 import {
   DriveStatus,
@@ -7,9 +8,13 @@ import {
   RecruitmentDriveDto,
 } from '@placement/shared';
 
+type StudentProfileWithAcademics = Prisma.StudentProfileGetPayload<{
+  include: { tenthMarks: true; twelfthDetails: true; d2dDetails: true };
+}>;
+
 export class DrivesService {
   async getDrives(userId?: string, query?: { search?: string; status?: string; eligibility?: string }): Promise<RecruitmentDriveDto[]> {
-    let studentProfile: any = null;
+    let studentProfile: StudentProfileWithAcademics | null = null;
     const appliedDriveIds = new Set<string>();
 
     if (userId) {
@@ -27,9 +32,9 @@ export class DrivesService {
       }
     }
 
-    const whereClause: any = {};
+    const whereClause: Prisma.RecruitmentDriveWhereInput = {};
     if (query?.status) {
-      whereClause.status = query.status;
+      whereClause.status = query.status as unknown as Prisma.EnumDriveStatusFilter['equals'];
     }
 
     if (query?.search) {
@@ -59,7 +64,9 @@ export class DrivesService {
 
     const dtos: RecruitmentDriveDto[] = drives.map((d) => {
       const hasApplied = appliedDriveIds.has(d.id);
-      const userApp = (d as any).applications?.[0];
+      const userApp = 'applications' in d && Array.isArray((d as { applications?: unknown[] }).applications)
+        ? (d as { applications: Array<{ id: string; status: string }> }).applications[0]
+        : undefined;
       const isClosed = now > new Date(d.deadline) || d.status !== 'ACTIVE';
 
       let isEligible = true;
@@ -212,7 +219,10 @@ export class DrivesService {
     };
   }
 
-  evaluateEligibility(studentProfile: any, drive: any): { isEligible: boolean; reasons: string[] } {
+  evaluateEligibility(
+    studentProfile: StudentProfileWithAcademics,
+    drive: RecruitmentDrive
+  ): { isEligible: boolean; reasons: string[] } {
     const reasons: string[] = [];
 
     // Profile check

@@ -1,4 +1,4 @@
-import { INotificationProvider, EmailPayload, SmsPayload, NotificationResult } from './provider.interface';
+import { INotificationProvider, EmailPayload, SmsPayload, WhatsAppPayload, NotificationResult } from './provider.interface';
 
 export class SmtpNotificationProvider implements INotificationProvider {
   readonly name = 'SmtpProvider';
@@ -54,10 +54,11 @@ export class SmtpNotificationProvider implements INotificationProvider {
             timestamp,
           };
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
         return {
           success: false,
-          error: `SendGrid network exception: ${err?.message || err}`,
+          error: `SendGrid network exception: ${errorMsg}`,
           timestamp,
         };
       }
@@ -82,7 +83,7 @@ export class SmtpNotificationProvider implements INotificationProvider {
     };
   }
 
-  async sendSms(payload: SmsPayload): Promise<NotificationResult> {
+  async sendSms(_payload: SmsPayload): Promise<NotificationResult> {
     const timestamp = new Date();
     return {
       success: false,
@@ -91,7 +92,7 @@ export class SmtpNotificationProvider implements INotificationProvider {
     };
   }
 
-  async sendWhatsApp(_payload: any): Promise<NotificationResult> {
+  async sendWhatsApp(_payload: WhatsAppPayload): Promise<NotificationResult> {
     const timestamp = new Date();
     return {
       success: false,

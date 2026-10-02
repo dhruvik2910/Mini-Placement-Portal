@@ -100,7 +100,7 @@ export class TwilioNotificationProvider implements INotificationProvider {
         body: params.toString(),
       });
 
-      const data: any = await res.json();
+      const data = (await res.json()) as { sid?: string; message?: string };
 
       if (!res.ok) {
         const errorMsg = data?.message || `Twilio SMS request failed with status ${res.status}`;
@@ -118,11 +118,12 @@ export class TwilioNotificationProvider implements INotificationProvider {
         messageId: data.sid,
         timestamp,
       };
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(`[TWILIO SMS] ❌ Network exception:`, err);
+      const errorMsg = err instanceof Error ? err.message : 'Twilio network request error';
       return {
         success: false,
-        error: err?.message || 'Twilio network request error',
+        error: errorMsg,
         timestamp,
       };
     }
@@ -162,7 +163,7 @@ export class TwilioNotificationProvider implements INotificationProvider {
         body: params.toString(),
       });
 
-      const data: any = await res.json();
+      const data = (await res.json()) as { sid?: string; message?: string };
 
       if (!res.ok) {
         const errorMsg = data?.message || `Twilio WhatsApp request failed with status ${res.status}`;
@@ -180,11 +181,12 @@ export class TwilioNotificationProvider implements INotificationProvider {
         messageId: data.sid,
         timestamp,
       };
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(`[TWILIO WHATSAPP] ❌ Network exception:`, err);
+      const errorMsg = err instanceof Error ? err.message : 'Twilio WhatsApp network request error';
       return {
         success: false,
-        error: err?.message || 'Twilio WhatsApp network request error',
+        error: errorMsg,
         timestamp,
       };
     }

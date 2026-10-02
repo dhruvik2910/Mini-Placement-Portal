@@ -1,11 +1,24 @@
 import { prisma } from '../../config/database';
+import { Prisma } from '@prisma/client';
 import { AppError } from '../../common/errors/app-error';
 import { drivesService } from '../drives/drives.service';
 import {
   ApplicationStatus,
   DriveStatus,
+  DriveType,
+  StudentType,
   ApplicationDto,
 } from '@placement/shared';
+
+type ApplicationWithRelations = Prisma.ApplicationGetPayload<{
+  include: {
+    recruitmentDrive: {
+      include: { company: true };
+    };
+  };
+}> & {
+  studentProfile?: unknown;
+};
 
 export class ApplicationsService {
   async applyToDrive(
@@ -97,9 +110,9 @@ export class ApplicationsService {
     const student = await prisma.studentProfile.findUnique({ where: { userId } });
     if (!student) throw AppError.notFound('Student profile not found');
 
-    const whereClause: any = { studentProfileId: student.id };
+    const whereClause: Prisma.ApplicationWhereInput = { studentProfileId: student.id };
     if (status && status !== 'ALL') {
-      whereClause.status = status;
+      whereClause.status = status as ApplicationStatus;
     }
 
     const applications = await prisma.application.findMany({
@@ -141,13 +154,13 @@ export class ApplicationsService {
     return this.mapToDto(application);
   }
 
-  private mapToDto(app: any): ApplicationDto {
+  private mapToDto(app: ApplicationWithRelations): ApplicationDto {
     const d = app.recruitmentDrive;
     return {
       id: app.id,
       studentProfileId: app.studentProfileId,
       recruitmentDriveId: app.recruitmentDriveId,
-      status: app.status,
+      status: app.status as unknown as ApplicationStatus,
       appliedAt: app.appliedAt.toISOString(),
       notes: app.notes,
       updatedAt: app.updatedAt.toISOString(),
@@ -172,8 +185,8 @@ export class ApplicationsService {
               : undefined,
             title: d.title,
             jobRole: d.jobRole,
-            driveType: d.driveType,
-            status: d.status,
+            driveType: d.driveType as unknown as DriveType,
+            status: d.status as unknown as DriveStatus,
             packageLpa: d.packageLpa ? Number(d.packageLpa) : null,
             stipendMonthly: d.stipendMonthly ? Number(d.stipendMonthly) : null,
             location: d.location,
@@ -186,7 +199,7 @@ export class ApplicationsService {
               minTenthPercentage: Number(d.minTenthPercentage),
               minTwelfthOrDiplomaPercentage: Number(d.minTwelfthOrDiplomaPercentage),
               maxActiveBacklogs: d.maxActiveBacklogs,
-              allowedStudentTypes: d.allowedStudentTypes,
+              allowedStudentTypes: d.allowedStudentTypes as unknown as StudentType[],
               allowedDepartments: d.allowedDepartments,
             },
             createdAt: d.createdAt.toISOString(),

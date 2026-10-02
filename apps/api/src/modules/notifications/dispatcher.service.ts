@@ -1,5 +1,10 @@
 import { prisma } from '../../config/database';
 import {
+  NotificationChannel as PrismaNotificationChannel,
+  NotificationDeliveryStatus as PrismaDeliveryStatus,
+  Prisma,
+} from '@prisma/client';
+import {
   NotificationChannel,
   NotificationDeliveryStatus,
   VerificationStatus,
@@ -125,9 +130,9 @@ export class NotificationDispatcherService {
         isSuccess = result.success;
         providerError = result.error;
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       isSuccess = false;
-      providerError = err?.message || 'Unexpected provider network exception';
+      providerError = err instanceof Error ? err.message : 'Unexpected provider network exception';
       console.error(`[NOTIFICATION DISPATCHER] Provider dispatch error:`, err);
     }
 
@@ -135,11 +140,12 @@ export class NotificationDispatcherService {
       ? NotificationDeliveryStatus.SENT
       : NotificationDeliveryStatus.FAILED;
 
-    // Sanitize non-ASCII characters for DB collation safety
-    // eslint-disable-next-line no-control-regex
-    const cleanSubject = options.subject.replace(/[^\x00-\x7F]/g, '');
-    // eslint-disable-next-line no-control-regex
-    const cleanBody = options.bodyText.replace(/[^\x00-\x7F]/g, '');
+    const prismaChannel = channel as unknown as PrismaNotificationChannel;
+    const prismaStatus = deliveryStatus as unknown as PrismaDeliveryStatus;
+
+    // Sanitize null characters for PostgreSQL storage safety while preserving full UTF-8
+    const cleanSubject = (options.subject || '').replace(/\0/g, '').trim();
+    const cleanBody = (options.bodyText || '').replace(/\0/g, '');
 
     // 3. Record in Delivery Log (Audit Trail)
     try {
@@ -150,8 +156,8 @@ export class NotificationDispatcherService {
             studentProfileId: options.studentProfileId || null,
             recipientEmail: options.recipientEmail,
             recipientPhone: options.recipientPhone || null,
-            channel: channel as any,
-            status: deliveryStatus as any,
+            channel: prismaChannel,
+            status: prismaStatus,
             template: options.template,
             subject: cleanSubject,
             body: cleanBody,
@@ -160,7 +166,7 @@ export class NotificationDispatcherService {
             sentAt: isSuccess ? new Date() : null,
           },
           update: {
-            status: deliveryStatus as any,
+            status: prismaStatus,
             error: providerError || null,
             sentAt: isSuccess ? new Date() : null,
           },
@@ -171,8 +177,8 @@ export class NotificationDispatcherService {
             studentProfileId: options.studentProfileId || null,
             recipientEmail: options.recipientEmail,
             recipientPhone: options.recipientPhone || null,
-            channel: channel as any,
-            status: deliveryStatus as any,
+            channel: prismaChannel,
+            status: prismaStatus,
             template: options.template,
             subject: cleanSubject,
             body: cleanBody,
@@ -500,13 +506,15 @@ export class NotificationDispatcherService {
   async getDeliveryLogs(filter?: {
     template?: string;
     status?: NotificationDeliveryStatus;
+    channel?: NotificationChannel;
     recipientEmail?: string;
     limit?: number;
     offset?: number;
   }) {
-    const where: any = {};
+    const where: Prisma.NotificationDeliveryLogWhereInput = {};
     if (filter?.template) where.template = filter.template;
-    if (filter?.status) where.status = filter.status;
+    if (filter?.status) where.status = filter.status as unknown as PrismaDeliveryStatus;
+    if (filter?.channel) where.channel = filter.channel as unknown as PrismaNotificationChannel;
     if (filter?.recipientEmail) {
       where.recipientEmail = { contains: filter.recipientEmail, mode: 'insensitive' };
     }

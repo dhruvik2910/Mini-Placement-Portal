@@ -70,11 +70,12 @@ export class GupshupNotificationProvider implements INotificationProvider {
         messageId: `gupshup-${Date.now()}`,
         timestamp,
       };
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(`[GUPSHUP SMS] ❌ Network error:`, err);
+      const errorMsg = err instanceof Error ? err.message : 'Gupshup SMS connection error';
       return {
         success: false,
-        error: err?.message || 'Gupshup SMS connection error',
+        error: errorMsg,
         timestamp,
       };
     }
@@ -111,7 +112,13 @@ export class GupshupNotificationProvider implements INotificationProvider {
         body: bodyParams.toString(),
       });
 
-      const data: any = await res.json();
+      const data = (await res.json()) as {
+        status?: string;
+        message?: string;
+        reason?: string;
+        messageId?: string;
+        id?: string;
+      };
 
       if (!res.ok || data.status === 'error') {
         const errorMsg = data?.message || data?.reason || `Gupshup WhatsApp HTTP ${res.status}`;
@@ -129,11 +136,12 @@ export class GupshupNotificationProvider implements INotificationProvider {
         messageId: data.messageId || data.id || `gupshup-wa-${Date.now()}`,
         timestamp,
       };
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(`[GUPSHUP WHATSAPP] ❌ Network error:`, err);
+      const errorMsg = err instanceof Error ? err.message : 'Gupshup WhatsApp connection error';
       return {
         success: false,
-        error: err?.message || 'Gupshup WhatsApp connection error',
+        error: errorMsg,
         timestamp,
       };
     }

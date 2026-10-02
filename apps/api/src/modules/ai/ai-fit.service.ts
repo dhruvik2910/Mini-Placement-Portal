@@ -6,6 +6,30 @@ import { env } from '../../config/env';
 import { AppError } from '../../common/errors/app-error';
 import { AiJobFitScoreDto, StudentSkills } from '@placement/shared';
 
+interface ProfileCandidateContext {
+  firstName: string;
+  lastName: string;
+  department: string;
+  batchYear: number;
+  currentCgpa: unknown;
+  activeBacklogs: number;
+  skills: unknown;
+  resumeName?: string | null;
+  resumeUrl?: string | null;
+}
+
+interface DriveJobContext {
+  title: string;
+  jobRole: string;
+  packageLpa?: unknown;
+  requiredSkills: string[];
+  description?: string | null;
+  company: {
+    name: string;
+    industry?: string | null;
+  };
+}
+
 export class AiFitService {
   /**
    * Analyze student's profile & resume against a placement drive's JD & required skills
@@ -57,7 +81,10 @@ export class AiFitService {
   /**
    * AI-powered analysis using Gemini API (@google/genai)
    */
-  private async analyzeWithGemini(studentProfile: any, drive: any): Promise<AiJobFitScoreDto | null> {
+  private async analyzeWithGemini(
+    studentProfile: ProfileCandidateContext,
+    drive: DriveJobContext
+  ): Promise<AiJobFitScoreDto | null> {
     const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY! });
     const skills = (studentProfile.skills as StudentSkills) || {
       technical: [],
@@ -129,7 +156,7 @@ Evaluate realistically and generate a structured JSON object matching the follow
 
 IMPORTANT: Return ONLY valid, parseable JSON. Do not wrap in markdown quotes if possible, or use standard markdown JSON codeblock.`;
 
-    const contents: any[] = [];
+    const contents: Array<{ inlineData?: { mimeType: string; data: string }; text?: string }> = [];
 
     if (resumeBufferBase64) {
       contents.push({
@@ -179,7 +206,10 @@ IMPORTANT: Return ONLY valid, parseable JSON. Do not wrap in markdown quotes if 
    * Deterministic ATS Semantic Matching Engine
    * Operates completely offline without requiring third-party API keys
    */
-  private analyzeWithAtsEngine(studentProfile: any, drive: any): AiJobFitScoreDto {
+  private analyzeWithAtsEngine(
+    studentProfile: ProfileCandidateContext,
+    drive: DriveJobContext
+  ): AiJobFitScoreDto {
     const rawSkills = (studentProfile.skills as StudentSkills) || {
       technical: [],
       soft: [],

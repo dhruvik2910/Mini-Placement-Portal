@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { tpoService } from './tpo.service';
 import { notificationDispatcher } from '../notifications/dispatcher.service';
-import { ApiResponse } from '@placement/shared';
+import { ApiResponse, NotificationChannel, NotificationDeliveryStatus } from '@placement/shared';
 
 export class TpoController {
   async getDashboard(_req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -305,10 +305,11 @@ export class TpoController {
 
   async getDeliveryLogs(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { template, status, recipientEmail, limit, offset } = req.query;
+      const { template, status, channel, recipientEmail, limit, offset } = req.query;
       const result = await notificationDispatcher.getDeliveryLogs({
         template: template as string,
-        status: status as any,
+        status: status as NotificationDeliveryStatus,
+        channel: channel as NotificationChannel,
         recipientEmail: recipientEmail as string,
         limit: limit ? parseInt(limit as string, 10) : undefined,
         offset: offset ? parseInt(offset as string, 10) : undefined,

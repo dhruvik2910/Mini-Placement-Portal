@@ -4,7 +4,7 @@ import { AuthenticatedUserPayload } from '../../middleware/auth.middleware';
 
 export function signJwtToken(payload: AuthenticatedUserPayload): string {
   const options: SignOptions = {
-    expiresIn: env.JWT_EXPIRES_IN as any,
+    expiresIn: env.JWT_EXPIRES_IN as SignOptions['expiresIn'],
   };
   return jwt.sign(payload, env.JWT_SECRET, options);
 }
