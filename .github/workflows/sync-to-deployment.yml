@@ -1,0 +1,27 @@
+name: Sync to Deployment Repository
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync to deployment repository
+        env:
+          SYNC_TOKEN: ${{ secrets.SYNC_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git remote add deployment "https://x-access-token:${SYNC_TOKEN}@github.com/vagelavibhu2007/mini-placement-portal.git"
+
+          git push deployment HEAD:main --force
