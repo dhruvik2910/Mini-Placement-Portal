@@ -436,5 +436,19 @@ export interface SendInterviewAlertResultDto {
   }>;
 }
 
-
-
+/**
+ * AI-powered resume and job description match score & tailored recommendations
+ */
+export interface AiJobFitScoreDto {
+  matchScore: number;
+  verdict: 'STRONG_MATCH' | 'MODERATE_MATCH' | 'GROWTH_OPPORTUNITY';
+  summary: string;
+  matchingSkills: string[];
+  missingSkills: string[];
+  tailoredBulletPoints: string[];
+  keyStrengths: string[];
+  recommendations: string[];
+  analyzedAt: string;
+  isAiGenerated: boolean;
+  modelUsed?: string;
+}

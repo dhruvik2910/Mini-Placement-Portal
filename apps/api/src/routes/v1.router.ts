@@ -5,6 +5,7 @@ import { studentRouter } from '../modules/student/student.router';
 import { drivesRouter } from '../modules/drives/drives.router';
 import { applicationsRouter } from '../modules/applications/applications.router';
 import { tpoRouter } from '../modules/tpo/tpo.router';
+import { aiRouter } from '../modules/ai/ai.router';
 
 const router = Router();
 
@@ -25,6 +26,9 @@ router.use('/applications', applicationsRouter);
 
 // Central TPO placement officer module
 router.use('/tpo', tpoRouter);
+
+// AI resume & job fit intelligence module
+router.use('/ai', aiRouter);
 
 export const v1Router = router;
 

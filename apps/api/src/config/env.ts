@@ -18,6 +18,7 @@ const envSchema = z.object({
   ),
   JWT_EXPIRES_IN: z.string().default('7d'),
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
+  GEMINI_API_KEY: z.string().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

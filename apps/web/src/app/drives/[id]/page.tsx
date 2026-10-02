@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '../../../context/auth-context';
 import { api, ApiError } from '../../../lib/api';
-import type { RecruitmentDriveDto, StudentProfileDto } from '@placement/shared';
+import type { RecruitmentDriveDto, StudentProfileDto, AiJobFitScoreDto } from '@placement/shared';
 
 export default function DriveDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +24,41 @@ export default function DriveDetailPage() {
   const [submitting, setSubmitting] = useState(false);
   const [applySuccess, setApplySuccess] = useState(false);
   const [applyError, setApplyError] = useState<string | null>(null);
+
+  // AI Resume Analyzer & Job Fit states
+  const [aiFit, setAiFit] = useState<AiJobFitScoreDto | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [copiedBulletIndex, setCopiedBulletIndex] = useState<number | null>(null);
+  const [copiedModalBulletIndex, setCopiedModalBulletIndex] = useState<number | null>(null);
+  const [showAiBulletsInModal, setShowAiBulletsInModal] = useState(false);
+
+  const fetchAiJobFit = React.useCallback(async () => {
+    if (!id || user?.role !== 'STUDENT') return;
+    try {
+      setAiLoading(true);
+      setAiError(null);
+      const fitData = await api.get<AiJobFitScoreDto>(`/drives/${id}/ai-fit`);
+      setAiFit(fitData);
+    } catch (err: any) {
+      setAiError(err?.message || 'Unable to compute AI job fit.');
+    } finally {
+      setAiLoading(false);
+    }
+  }, [id, user?.role]);
+
+  const handleCopyBullet = (text: string, index: number, isModal = false) => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      if (isModal) {
+        setCopiedModalBulletIndex(index);
+        setTimeout(() => setCopiedModalBulletIndex(null), 2500);
+      } else {
+        setCopiedBulletIndex(index);
+        setTimeout(() => setCopiedBulletIndex(null), 2500);
+      }
+    }
+  };
 
   const fetchDriveAndProfile = React.useCallback(async () => {
     try {
@@ -45,8 +80,11 @@ export default function DriveDetailPage() {
   useEffect(() => {
     if (id) {
       fetchDriveAndProfile();
+      if (user?.role === 'STUDENT') {
+        fetchAiJobFit();
+      }
     }
-  }, [id, fetchDriveAndProfile]);
+  }, [id, user?.role, fetchDriveAndProfile, fetchAiJobFit]);
 
   const handleApply = async () => {
     if (!confirmedDeclaration) return;
@@ -204,6 +242,274 @@ export default function DriveDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-space-lg">
         {/* Left 2 Cols: Job Details & Skills */}
         <div className="lg:col-span-2 space-y-space-lg">
+          {/* Feature 3: AI Resume Analyzer & Job Fit Scoring Card */}
+          {user?.role === 'STUDENT' && (
+            <div className="relative overflow-hidden rounded-2xl bg-surface-container-lowest p-space-lg border border-primary/25 shadow-sm space-y-space-md">
+              {/* Top Banner & Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/20">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-primary-container text-on-primary flex items-center justify-center shadow-xs flex-shrink-0">
+                    <span className="material-symbols-outlined text-[22px]">auto_awesome</span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h2 className="font-headline-sm text-primary font-bold text-[16px]">
+                        AI Resume Analyzer &amp; Job Fit Scoring
+                      </h2>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-fixed/50 text-on-primary-fixed font-label-sm text-[11px] font-bold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                        {aiFit?.isAiGenerated ? 'Gemini 2.5 Flash' : 'ATS Semantic Matcher'}
+                      </span>
+                    </div>
+                    <p className="font-body-sm text-on-surface-variant text-[12px]">
+                      Automated match scoring comparing your candidate dossier against this JD &amp; required skills
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={fetchAiJobFit}
+                  disabled={aiLoading}
+                  className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-primary font-label-md text-[12px] font-semibold transition-colors border border-outline-variant/30 disabled:opacity-50 cursor-pointer"
+                  title="Re-analyze candidate profile against JD"
+                >
+                  <span className={`material-symbols-outlined text-[16px] ${aiLoading ? 'animate-spin' : ''}`}>
+                    refresh
+                  </span>
+                  <span>{aiLoading ? 'Analyzing...' : 'Re-analyze Fit'}</span>
+                </button>
+              </div>
+
+              {/* Loading State */}
+              {aiLoading && !aiFit && (
+                <div className="py-8 flex flex-col items-center justify-center gap-2 text-center">
+                  <div className="w-8 h-8 border-3 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+                  <p className="font-label-md text-on-surface font-semibold text-[13px]">
+                    Analyzing your resume &amp; extracting job compatibility...
+                  </p>
+                  <p className="font-body-sm text-outline text-[12px]">
+                    Evaluating technical competencies, academic indicators, and ATS keyword relevance
+                  </p>
+                </div>
+              )}
+
+              {/* Error State */}
+              {aiError && !aiFit && !aiLoading && (
+                <div className="p-4 rounded-xl bg-error-container/30 border border-error/20 flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-error text-[13px]">
+                    <span className="material-symbols-outlined text-[18px]">error</span>
+                    <span>{aiError}</span>
+                  </div>
+                  <button
+                    onClick={fetchAiJobFit}
+                    className="px-3 py-1 bg-error text-on-error rounded-lg text-[12px] font-bold"
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
+
+              {/* Analysis Results Display */}
+              {aiFit && (
+                <div className="space-y-space-md">
+                  {/* Score & Verdict Dashboard Box */}
+                  <div className="p-4 rounded-xl bg-surface-container-low/50 border border-outline-variant/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      {/* Radial-styled score box */}
+                      <div
+                        className={`w-18 h-18 rounded-2xl flex flex-col items-center justify-center border font-extrabold flex-shrink-0 shadow-xs ${
+                          aiFit.verdict === 'STRONG_MATCH'
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                            : aiFit.verdict === 'MODERATE_MATCH'
+                            ? 'bg-amber-50 text-amber-800 border-amber-300'
+                            : 'bg-rose-50 text-rose-800 border-rose-300'
+                        }`}
+                      >
+                        <span className="font-mono text-[24px] leading-none">{aiFit.matchScore}%</span>
+                        <span className="text-[10px] tracking-wider uppercase font-semibold mt-0.5">Match</span>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${
+                              aiFit.verdict === 'STRONG_MATCH'
+                                ? 'bg-emerald-100 text-emerald-800'
+                                : aiFit.verdict === 'MODERATE_MATCH'
+                                ? 'bg-amber-100 text-amber-800'
+                                : 'bg-rose-100 text-rose-800'
+                            }`}
+                          >
+                            <span className="material-symbols-outlined text-[14px]">
+                              {aiFit.verdict === 'STRONG_MATCH'
+                                ? 'verified'
+                                : aiFit.verdict === 'MODERATE_MATCH'
+                                ? 'trending_up'
+                                : 'flag'}
+                            </span>
+                            {aiFit.verdict.replace('_', ' ')}
+                          </span>
+                          <span className="text-[11px] text-outline">
+                            Analyzed {new Date(aiFit.analyzedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+                        <p className="font-body-md text-on-surface text-[13px] leading-snug mt-1.5 max-w-xl">
+                          {aiFit.summary}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 2-Columns: Matching Skills vs Missing Keywords */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+                    {/* Matching Skills */}
+                    <div className="p-3.5 rounded-xl bg-emerald-50/50 border border-emerald-200/80 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-label-md font-bold text-emerald-900 text-[13px] flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-emerald-700 text-[18px]">check_circle</span>
+                          Matching Skills ({aiFit.matchingSkills.length})
+                        </span>
+                        <span className="text-[11px] font-semibold text-emerald-700">Verified Fit</span>
+                      </div>
+                      {aiFit.matchingSkills.length > 0 ? (
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {aiFit.matchingSkills.map((skill, idx) => (
+                            <span
+                              key={idx}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-100/90 text-emerald-900 font-label-md text-[12px] font-medium border border-emerald-200"
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="font-body-sm text-on-surface-variant text-[12px]">
+                          No direct skill overlap detected yet. Review the required skills below.
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Missing Keywords */}
+                    <div className="p-3.5 rounded-xl bg-amber-50/50 border border-amber-200/80 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-label-md font-bold text-amber-900 text-[13px] flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-amber-700 text-[18px]">warning</span>
+                          Missing Keywords ({aiFit.missingSkills.length})
+                        </span>
+                        <span className="text-[11px] font-semibold text-amber-700">ATS Keywords</span>
+                      </div>
+                      {aiFit.missingSkills.length > 0 ? (
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {aiFit.missingSkills.map((skill, idx) => (
+                            <span
+                              key={idx}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-100/90 text-amber-900 font-label-md text-[12px] font-medium border border-amber-200"
+                            >
+                              <span className="material-symbols-outlined text-[13px] text-amber-700">add</span>
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="font-body-sm text-emerald-800 text-[12px] font-medium">
+                          Exceptional coverage! You meet all target keywords specified in this JD.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Tailored Resume Bullet Points (STAR / Google X-Y-Z Format) */}
+                  <div className="p-4 rounded-xl bg-surface-container-low/40 border border-primary/20 space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                      <div>
+                        <h3 className="font-label-md font-bold text-primary text-[14px] flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-primary text-[18px]">edit_note</span>
+                          Tailored Resume Bullet Points (STAR / Google X-Y-Z Format)
+                        </h3>
+                        <p className="font-body-sm text-on-surface-variant text-[12px]">
+                          Suggest tailored bullets for your resume before submitting to {drive.company?.name}:
+                        </p>
+                      </div>
+                      <span className="text-[11px] text-outline self-start sm:self-auto">Click to copy</span>
+                    </div>
+
+                    <div className="space-y-2">
+                      {aiFit.tailoredBulletPoints.map((bullet, idx) => (
+                        <div
+                          key={idx}
+                          className="group p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/40 transition-all flex items-start justify-between gap-3 shadow-2xs"
+                        >
+                          <div className="flex items-start gap-2.5">
+                            <span className="w-5 h-5 rounded-full bg-primary-fixed/40 text-primary font-bold text-[11px] flex items-center justify-center flex-shrink-0 mt-0.5">
+                              {idx + 1}
+                            </span>
+                            <p className="font-body-sm text-on-surface text-[13px] leading-relaxed">
+                              {bullet}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => handleCopyBullet(bullet, idx)}
+                            className={`flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
+                              copiedBulletIndex === idx
+                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                : 'bg-surface-container-low hover:bg-primary hover:text-on-primary text-on-surface-variant border border-outline-variant/30'
+                            }`}
+                            title="Copy bullet point to clipboard"
+                          >
+                            <span className="material-symbols-outlined text-[14px]">
+                              {copiedBulletIndex === idx ? 'check' : 'content_copy'}
+                            </span>
+                            <span>{copiedBulletIndex === idx ? 'Copied!' : 'Copy'}</span>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Key Strengths & Strategic Recommendations */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-md text-[13px]">
+                    {/* Strengths */}
+                    {aiFit.keyStrengths && aiFit.keyStrengths.length > 0 && (
+                      <div className="p-3 rounded-xl bg-surface-container-low/30 border border-outline-variant/20 space-y-1.5">
+                        <span className="font-label-md font-bold text-on-surface text-[12px] flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-primary text-[16px]">verified</span>
+                          Candidate Competitive Edges
+                        </span>
+                        <ul className="space-y-1">
+                          {aiFit.keyStrengths.map((str, idx) => (
+                            <li key={idx} className="flex items-start gap-1.5 text-on-surface-variant text-[12px]">
+                              <span className="text-primary font-bold">•</span>
+                              <span>{str}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Recommendations */}
+                    {aiFit.recommendations && aiFit.recommendations.length > 0 && (
+                      <div className="p-3 rounded-xl bg-surface-container-low/30 border border-outline-variant/20 space-y-1.5">
+                        <span className="font-label-md font-bold text-on-surface text-[12px] flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-amber-600 text-[16px]">lightbulb</span>
+                          Interview Prep Action Items
+                        </span>
+                        <ul className="space-y-1">
+                          {aiFit.recommendations.map((rec, idx) => (
+                            <li key={idx} className="flex items-start gap-1.5 text-on-surface-variant text-[12px]">
+                              <span className="text-amber-600 font-bold">•</span>
+                              <span>{rec}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Job Description */}
           <div className="bg-surface-container-lowest rounded-2xl p-space-lg border border-outline-variant/30 shadow-sm space-y-space-md">
             <h2 className="font-headline-sm text-primary font-bold text-[16px] flex items-center gap-2">
@@ -554,6 +860,64 @@ export default function DriveDetailPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* AI Job Fit & Tailored Bullets Recommendation Banner */}
+                {aiFit && (
+                  <div className="p-3.5 rounded-xl bg-primary-fixed/20 border border-primary/25 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-label-md font-bold text-primary text-[12px] flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px]">auto_awesome</span>
+                        AI Match Score: {aiFit.matchScore}% ({aiFit.verdict.replace('_', ' ')})
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setShowAiBulletsInModal(!showAiBulletsInModal)}
+                        className="text-[11px] font-semibold text-primary hover:underline cursor-pointer flex items-center gap-0.5"
+                      >
+                        <span>{showAiBulletsInModal ? 'Hide Tailored Bullets' : 'View Tailored Bullets'}</span>
+                        <span className="material-symbols-outlined text-[14px]">
+                          {showAiBulletsInModal ? 'expand_less' : 'expand_more'}
+                        </span>
+                      </button>
+                    </div>
+
+                    <div className="text-[11px] text-on-surface-variant flex items-center gap-3">
+                      <span className="flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                        {aiFit.matchingSkills.length} Matching Skills
+                      </span>
+                      {aiFit.missingSkills.length > 0 && (
+                        <span className="flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                          {aiFit.missingSkills.length} Missing Keywords
+                        </span>
+                      )}
+                    </div>
+
+                    {showAiBulletsInModal && (
+                      <div className="pt-2 border-t border-primary/10 space-y-2">
+                        <span className="text-[11px] font-medium text-outline block">
+                          Suggested bullet points to copy into your resume or candidate note:
+                        </span>
+                        {aiFit.tailoredBulletPoints.map((bullet, idx) => (
+                          <div
+                            key={idx}
+                            className="p-2 rounded-lg bg-surface-container-lowest border border-outline-variant/30 text-[12px] text-on-surface flex items-start justify-between gap-2"
+                          >
+                            <p className="leading-snug">{bullet}</p>
+                            <button
+                              type="button"
+                              onClick={() => handleCopyBullet(bullet, idx, true)}
+                              className="flex-shrink-0 px-2 py-0.5 rounded bg-surface-container text-[11px] font-semibold hover:bg-primary hover:text-on-primary transition-colors cursor-pointer"
+                            >
+                              {copiedModalBulletIndex === idx ? 'Copied' : 'Copy'}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Optional note */}
                 <div>

@@ -13,7 +13,7 @@
     "db:start": "node database/run-db.js",
     "db:migrate": "node database/migrate.js",
     "db:seed": "node database/create-resumes.js && node database/seed.js",
-    "test:all": "node database/test-web-and-api-complete.js && node database/test-tpo-flow.js && node database/test-notifications-flow.js && node database/test-tpo-export-flow.js && node database/test-ldce-scope.js && node database/test-whatsapp-alerts-flow.js",
+    "test:all": "node database/test-web-and-api-complete.js && node database/test-tpo-flow.js && node database/test-notifications-flow.js && node database/test-tpo-export-flow.js && node database/test-ldce-scope.js && node database/test-whatsapp-alerts-flow.js && node database/test-ai-resume-analyzer-flow.js",
     "build:shared": "npm run build --workspace=@placement/shared",
     "build:api": "npm run build --workspace=@placement/api",
     "build:web": "npm run build --workspace=@placement/web",

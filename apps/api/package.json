@@ -13,6 +13,7 @@
     "prisma:validate": "prisma validate"
   },
   "dependencies": {
+    "@google/genai": "^2.26.0",
     "@placement/shared": "*",
     "@prisma/client": "^5.20.0",
     "bcryptjs": "^2.4.3",
