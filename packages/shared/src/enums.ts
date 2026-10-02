@@ -81,3 +81,14 @@ export enum NotificationDeliveryStatus {
   FAILED = 'FAILED',
 }
 
+/**
+ * Notification Provider Gateways
+ */
+export enum NotificationGatewayProvider {
+  MOCK = 'MOCK',
+  TWILIO = 'TWILIO',
+  GUPSHUP = 'GUPSHUP',
+  WHATSAPP_CLOUD = 'WHATSAPP_CLOUD',
+  SMTP = 'SMTP',
+}
+

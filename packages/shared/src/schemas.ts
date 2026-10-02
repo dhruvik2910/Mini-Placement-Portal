@@ -7,6 +7,8 @@ import {
   ApplicationStatus,
   DriveType,
   DriveStatus,
+  NotificationChannel,
+  NotificationGatewayProvider,
 } from './enums';
 
 export const UserRoleSchema = z.nativeEnum(UserRole);
@@ -21,6 +23,57 @@ export const SubjectWiseMarkSchema = z.object({
   subject: z.string().min(1, 'Subject name is required').trim(),
   marksObtained: z.number().min(0, 'Marks cannot be negative'),
   maxMarks: z.number().positive('Max marks must be greater than 0'),
+});
+
+export const TenthMarksSchema = z.object({
+  board: z.string().min(2, 'Board name is required').trim(),
+  schoolName: z.string().min(2, 'School name is required').trim(),
+  passingYear: z.number().int().min(2000).max(2035),
+  marksObtained: z.number().min(0),
+  totalMarks: z.number().positive(),
+  percentage: z.number().min(0).max(100).optional(),
+  subjectWiseMarks: z.array(SubjectWiseMarkSchema).default([]),
+});
+
+export const TwelfthMarksSchema = z.object({
+  board: z.string().min(2, 'Board name is required').trim(),
+  schoolName: z.string().min(2, 'School/Junior College name is required').trim(),
+  stream: z.string().min(2, 'Stream is required (e.g. Science, General)').trim(),
+  passingYear: z.number().int().min(2000).max(2035),
+  marksObtained: z.number().min(0),
+  totalMarks: z.number().positive(),
+  percentage: z.number().min(0).max(100).optional(),
+  subjectWiseMarks: z.array(SubjectWiseMarkSchema).default([]),
+});
+
+export const DiplomaSemesterSchema = z.object({
+  semester: z.number().int().min(1).max(8),
+  spi: z.number().min(0).max(10),
+  cpi: z.number().min(0).max(10),
+  activeBacklogs: z.number().int().min(0).default(0),
+  clearedBacklogs: z.number().int().min(0).default(0),
+});
+
+export const DiplomaMarksSchema = z.object({
+  diplomaCollege: z.string().min(2, 'Diploma college name is required').trim(),
+  diplomaUniversity: z.string().min(2, 'University/Board name is required (e.g. GTU, TEB)').trim(),
+  diplomaBranch: z.string().min(2, 'Diploma branch name is required').trim(),
+  passingYear: z.number().int().min(2000).max(2035),
+  diplomaCgpa: z.number().min(0).max(10),
+  diplomaPercentage: z.number().min(0).max(100).optional().nullable(),
+  semesterBreakdown: z.array(DiplomaSemesterSchema).default([]),
+});
+
+export const DegreeSemesterSchema = z.object({
+  semester: z.number().int().min(1).max(8),
+  spi: z.number().min(0).max(10),
+  cpi: z.number().min(0).max(10),
+  activeBacklogs: z.number().int().min(0).default(0),
+  clearedBacklogs: z.number().int().min(0).default(0),
+});
+
+export const DegreeSemesterBreakdownSchema = z.object({
+  semesters: z.array(DegreeSemesterSchema).min(1, 'Provide at least one semester entry'),
 });
 
 export const StudentSkillsSchema = z.object({
@@ -48,13 +101,15 @@ export const HealthCheckResponseSchema = z.object({
 export const StudentRegisterSchema = z.object({
   email: z.string().email('Invalid email address').trim().toLowerCase(),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  enrollmentNumber: z.string().min(3, 'Enrollment number is required').trim().toUpperCase(),
-  firstName: z.string().min(1, 'First name is required').trim(),
-  middleName: z.string().trim().optional(),
-  lastName: z.string().min(1, 'Last name is required').trim(),
-  department: z.string().min(1, 'Department is required').trim(),
-  batchYear: z.coerce.number().int().min(2020).max(2035),
-  studentType: StudentTypeSchema.default(StudentType.REGULAR),
+  firstName: z.string().min(2, 'First name is required').trim(),
+  middleName: z.string().trim().optional().nullable(),
+  lastName: z.string().min(2, 'Last name is required').trim(),
+  enrollmentNumber: z.string().min(6, 'Valid GTU enrollment number is required').trim().toUpperCase(),
+  department: z.string().min(2, 'Department is required').trim(),
+  studentType: StudentTypeSchema,
+  phone: z.string().trim().optional().default('9876543210'),
+  currentSemester: z.number().int().min(1).max(8).optional().default(7),
+  batchYear: z.number().int().min(2020).max(2035).default(2025),
 });
 
 export const LoginSchema = z.object({
@@ -62,90 +117,51 @@ export const LoginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
-// Profile Update Schema
-export const UpdateProfileSchema = z.object({
-  // Personal Info
-  firstName: z.string().min(1, 'First name is required').trim(),
-  middleName: z.string().trim().optional().nullable(),
-  lastName: z.string().min(1, 'Last name is required').trim(),
-  phone: z.string().trim().optional().nullable(),
+// Student Profile Edit Schemas
+export const StudentProfileUpdateSchema = z.object({
+  firstName: z.string().optional(),
+  middleName: z.string().optional().nullable(),
+  lastName: z.string().optional(),
+  phone: z.string().min(10, 'Valid 10-digit phone number is required').trim().optional().nullable(),
   dateOfBirth: z.string().optional().nullable(),
-  gender: z.string().trim().optional().nullable(),
   address: z.string().trim().optional().nullable(),
-  department: z.string().min(1, 'Department is required').trim(),
-  batchYear: z.coerce.number().int().min(2020).max(2035),
-  currentSemester: z.coerce.number().int().min(1).max(8).default(7),
-  currentCgpa: z.coerce.number().min(0).max(10),
-  activeBacklogs: z.coerce.number().int().min(0).default(0),
-  totalBacklogs: z.coerce.number().int().min(0).default(0),
-
-  // 10th Standard Marks
-  tenthMarks: z.object({
-    board: z.string().min(1, '10th Board is required').trim(),
-    schoolName: z.string().min(1, '10th School is required').trim(),
-    passingYear: z.coerce.number().int().min(2010).max(2030),
-    marksObtained: z.coerce.number().min(0),
-    totalMarks: z.coerce.number().positive(),
-    percentage: z.coerce.number().min(0).max(100),
-    subjectWiseMarks: z.array(SubjectWiseMarkSchema).default([]),
-  }),
-
-  // Regular Student: 12th Details
-  twelfthDetails: z
-    .object({
-      board: z.string().min(1, '12th Board is required').trim(),
-      schoolName: z.string().min(1, '12th School is required').trim(),
-      passingYear: z.coerce.number().int().min(2010).max(2030),
-      stream: z.string().min(1, 'Stream is required').trim(),
-      marksObtained: z.coerce.number().min(0),
-      totalMarks: z.coerce.number().positive(),
-      percentage: z.coerce.number().min(0).max(100),
-    })
-    .optional()
-    .nullable(),
-
-  // D2D Student: Diploma Details
-  d2dDetails: z
-    .object({
-      diplomaCollege: z.string().min(1, 'Diploma college is required').trim(),
-      diplomaUniversity: z.string().min(1, 'Diploma university is required').trim(),
-      diplomaBranch: z.string().min(1, 'Diploma branch is required').trim(),
-      passingYear: z.coerce.number().int().min(2010).max(2030),
-      diplomaCgpa: z.coerce.number().min(0).max(10),
-      diplomaPercentage: z.coerce.number().min(0).max(100).optional().nullable(),
-    })
-    .optional()
-    .nullable(),
-
-  // Skills
+  gender: z.string().optional().nullable(),
+  department: z.string().optional(),
+  currentSemester: z.number().int().min(1).max(8).optional(),
+  batchYear: z.number().int().min(2020).max(2035).optional(),
+  currentCgpa: z.number().min(0).max(10).optional().nullable(),
+  activeBacklogs: z.number().int().min(0).default(0),
+  totalBacklogs: z.number().int().min(0).default(0),
+  totalBacklogsHistory: z.number().int().min(0).default(0),
   skills: StudentSkillsSchema.optional().nullable(),
+  linkedinUrl: z.string().url('Invalid LinkedIn URL').optional().nullable().or(z.literal('')),
+  githubUrl: z.string().url('Invalid GitHub URL').optional().nullable().or(z.literal('')),
+  tenthMarks: TenthMarksSchema,
+  twelfthDetails: TwelfthMarksSchema.optional().nullable(),
+  d2dDetails: DiplomaMarksSchema.optional().nullable(),
 });
 
-// Application Creation Schema
+export const UpdateProfileSchema = StudentProfileUpdateSchema;
+
 export const ApplyDriveSchema = z.object({
   recruitmentDriveId: z.string().uuid('Invalid recruitment drive ID'),
-  notes: z.string().max(500).optional().nullable(),
 });
-
-// ==============================================================================
-// TPO Management Schemas
-// ==============================================================================
 
 // Company Schemas
 export const CompanyCreateSchema = z.object({
   name: z.string().min(2, 'Company name is required').trim(),
-  website: z.string().trim().optional().nullable(),
-  industry: z.string().trim().optional().nullable(),
+  website: z.string().url('Invalid website URL').trim().optional().nullable().or(z.literal('')),
+  industry: z.string().min(2, 'Industry type is required').trim(),
   description: z.string().trim().optional().nullable(),
-  logoUrl: z.string().trim().optional().nullable(),
+  logoUrl: z.string().url('Invalid logo URL').trim().optional().nullable().or(z.literal('')),
   contactPerson: z.string().trim().optional().nullable(),
-  contactEmail: z.string().email('Invalid email').trim().optional().nullable().or(z.literal('')),
+  contactEmail: z.string().email('Invalid contact email').trim().optional().nullable().or(z.literal('')),
   contactPhone: z.string().trim().optional().nullable(),
 });
 
 export const CompanyUpdateSchema = CompanyCreateSchema.partial();
 
-// Recruitment Drive Schemas
+// Drive Schemas
 export const DriveCreateSchema = z.object({
   companyId: z.string().uuid('Invalid company ID'),
   title: z.string().min(2, 'Title is required').trim(),
@@ -187,3 +203,21 @@ export const VerifyStudentProfileSchema = z.object({
   remarks: z.string().max(500).optional().nullable(),
 });
 
+// Notification Gateway Schemas
+export const NotificationChannelSchema = z.nativeEnum(NotificationChannel);
+export const NotificationGatewayProviderSchema = z.nativeEnum(NotificationGatewayProvider);
+
+export const SendInterviewAlertSchema = z.object({
+  applicationIds: z.array(z.string().uuid('Invalid application ID')).min(1, 'Select at least one applicant'),
+  roundName: z.string().min(2, 'Round name is required').trim(),
+  scheduleTime: z.string().min(2, 'Interview date & time is required').trim(),
+  venue: z.string().min(2, 'Venue is required').trim(),
+  channels: z.array(NotificationChannelSchema).min(1, 'Select at least one delivery channel'),
+  customNote: z.string().max(500).optional().nullable(),
+});
+
+export const TestGatewaySchema = z.object({
+  channel: NotificationChannelSchema,
+  recipient: z.string().min(3, 'Recipient phone or email is required').trim(),
+  message: z.string().optional(),
+});

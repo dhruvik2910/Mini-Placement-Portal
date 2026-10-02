@@ -385,7 +385,7 @@ export interface TpoAnalyticsDto {
 }
 
 /**
- * Audit log entry for outbox notifications (Email / SMS / In-App)
+ * Audit log entry for outbox notifications (Email / SMS / WhatsApp / In-App)
  */
 export interface NotificationDeliveryLogDto {
   id: string;
@@ -404,7 +404,7 @@ export interface NotificationDeliveryLogDto {
 }
 
 /**
- * Payload for dispatching instant interview alerts across WhatsApp, SMS, and Email
+ * Request DTO for Instant Interview Alerts (WhatsApp, SMS, Email)
  */
 export interface SendInterviewAlertDto {
   applicationIds: string[];
@@ -416,24 +416,53 @@ export interface SendInterviewAlertDto {
 }
 
 /**
- * Result returned after dispatching instant interview alerts
+ * Result DTO for Instant Interview Alerts
  */
 export interface SendInterviewAlertResultDto {
-  success: boolean;
+  totalTargeted?: number;
   dispatchedCount: number;
   channelsUsed: NotificationChannel[];
-  timestamp: string;
   details?: Array<{
     applicationId: string;
     studentName: string;
-    enrollmentNumber: string;
-    channels: Array<{
-      channel: NotificationChannel;
-      success: boolean;
-      messageId?: string;
-      error?: string;
-    }>;
+    phone?: string | null;
+    email?: string;
+    whatsappStatus?: string;
+    smsStatus?: string;
+    emailStatus?: string;
+    delivered?: boolean;
+    enrollmentNumber?: string;
   }>;
+}
+
+/**
+ * Gateway Provider status overview
+ */
+export interface GatewayStatusDto {
+  provider: string;
+  whatsappEnabled: boolean;
+  smsEnabled: boolean;
+  emailEnabled: boolean;
+  supportedGateways: string[];
+  environment: string;
+}
+
+/**
+ * Test Gateway Request DTO
+ */
+export interface TestGatewayRequestDto {
+  channel: NotificationChannel;
+  recipient: string; // phone or email
+  message?: string;
+}
+
+export interface TestGatewayResultDto {
+  success: boolean;
+  channel: NotificationChannel;
+  recipient: string;
+  messageId?: string;
+  provider: string;
+  error?: string;
 }
 
 /**

@@ -17,6 +17,8 @@ export default function RegisterPage() {
     department: 'Computer Engineering',
     batchYear: 2025,
     studentType: StudentType.REGULAR,
+    phone: '9876543210',
+    currentSemester: 7,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

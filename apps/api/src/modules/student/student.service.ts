@@ -67,7 +67,7 @@ export class StudentService {
           department: dto.department,
           batchYear: dto.batchYear,
           currentSemester: dto.currentSemester,
-          currentCgpa: dto.currentCgpa,
+          currentCgpa: dto.currentCgpa ?? undefined,
           activeBacklogs: dto.activeBacklogs,
           totalBacklogs: dto.totalBacklogs,
           skills: dto.skills ? (dto.skills as any) : undefined,
