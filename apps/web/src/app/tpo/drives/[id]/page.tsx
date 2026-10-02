@@ -222,6 +222,16 @@ export default function TpoDriveDetailPage() {
         {/* Action Buttons */}
         <div className="flex items-center gap-2 flex-wrap">
           <Link
+            id="tpo-drive-detail-instant-alert-btn"
+            href={`/tpo/drives/${drive.id}/applicants?action=alert`}
+            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[13px] shadow-sm hover:shadow-md transition-all flex items-center gap-1.5 ring-2 ring-emerald-400/30 cursor-pointer"
+            title="Dispatch instant WhatsApp & SMS alerts to shortlisted candidates"
+          >
+            <span className="material-symbols-outlined text-[18px]">bolt</span>
+            <span>⚡ Instant WhatsApp &amp; SMS Alert</span>
+          </Link>
+
+          <Link
             href={`/tpo/drives/${drive.id}/applicants`}
             className="px-4 py-2 rounded-xl bg-primary text-on-primary font-bold text-[13px] hover:bg-primary-container transition-colors shadow-xs flex items-center gap-1.5"
           >

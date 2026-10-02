@@ -84,12 +84,20 @@ export class SmtpNotificationProvider implements INotificationProvider {
 
   async sendSms(payload: SmsPayload): Promise<NotificationResult> {
     const timestamp = new Date();
-    // In production, integrate with Twilio or Fast2SMS / institutional gateway
-    console.log(`[SMS DISPATCHER] Real SMS integration not configured. Target: ${payload.to}`);
     return {
       success: false,
-      error: 'SMS gateway provider credentials not configured in environment',
+      error: 'SMTP provider does not support SMS dispatch. Use Twilio / Gupshup provider.',
+      timestamp,
+    };
+  }
+
+  async sendWhatsApp(_payload: any): Promise<NotificationResult> {
+    const timestamp = new Date();
+    return {
+      success: false,
+      error: 'SMTP provider does not support WhatsApp dispatch. Use Twilio / Gupshup / WhatsApp Cloud provider.',
       timestamp,
     };
   }
 }
+
