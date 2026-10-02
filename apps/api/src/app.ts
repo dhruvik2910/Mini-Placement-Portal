@@ -13,19 +13,7 @@ export function createApp(): Application {
   // Basic Security & Parsing Middleware
   app.use(
     cors({
-      origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps, curl, serverless)
-        if (!origin) return callback(null, true);
-        if (
-          env.CORS_ORIGIN === '*' ||
-          env.CORS_ORIGIN === origin ||
-          origin.includes('localhost') ||
-          origin.endsWith('.vercel.app')
-        ) {
-          return callback(null, true);
-        }
-        return callback(null, true);
-      },
+      origin: env.CORS_ORIGIN === '*' ? '*' : [env.CORS_ORIGIN, 'http://localhost:3000'],
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
@@ -47,7 +35,7 @@ export function createApp(): Application {
     next();
   });
 
-  // Root status check
+  // Root redirect/status
   app.get('/', (_req: Request, res: Response) => {
     res.status(200).json({
       name: 'College Mini Placement Portal API',
@@ -56,18 +44,8 @@ export function createApp(): Application {
     });
   });
 
-  // Minimal standard health check
-  app.get('/health', (_req: Request, res: Response) => {
-    res.status(200).json({
-      status: 'ok',
-      service: 'mini-placement-portal-api',
-      timestamp: new Date().toISOString(),
-    });
-  });
-
-  // Mount API version prefix: /api/v1 and /api alias
+  // Mount API version prefix: /api/v1
   app.use(`/api/${env.API_VERSION}`, v1Router);
-  app.use('/api', v1Router);
 
   // Fallthrough 404 Handler
   app.use(notFoundHandler);
@@ -79,5 +57,3 @@ export function createApp(): Application {
 }
 
 export const app = createApp();
-export default app;
-
