@@ -13,7 +13,7 @@ export function createApp(): Application {
   // Basic Security & Parsing Middleware
   app.use(
     cors({
-      origin: true,
+      origin: env.CORS_ORIGIN === '*' ? '*' : [env.CORS_ORIGIN, 'http://localhost:3000'],
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
@@ -44,9 +44,8 @@ export function createApp(): Application {
     });
   });
 
-  // Mount API version prefix: /api/v1 and /api
+  // Mount API version prefix: /api/v1
   app.use(`/api/${env.API_VERSION}`, v1Router);
-  app.use('/api', v1Router);
 
   // Fallthrough 404 Handler
   app.use(notFoundHandler);
