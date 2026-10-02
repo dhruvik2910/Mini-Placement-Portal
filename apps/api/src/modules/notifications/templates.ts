@@ -312,3 +312,168 @@ export function getApplicantRejectedEmail({
 
   return { subject, text, html };
 }
+
+// ==============================================================================
+// WhatsApp Alert Templates (Formatted for Instant Messaging)
+// ==============================================================================
+
+export function getProfileVerifiedWhatsApp({
+  firstName,
+  enrollmentNumber,
+}: {
+  firstName: string;
+  enrollmentNumber: string;
+}) {
+  const portalUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  const message =
+    `✅ *[LDCE Placements] Academic Profile Verified!*\n\n` +
+    `Hello *${firstName}* (Roll: ${enrollmentNumber}),\n\n` +
+    `Your academic marks and profile have been successfully *VERIFIED* by the Central Training & Placement Office.\n\n` +
+    `You are now eligible to participate in active placement drives.\n\n` +
+    `🔗 *Browse Active Drives:* ${portalUrl}/drives\n\n` +
+    `_Training & Placement Cell, L.D. College of Engineering (GTU Code: 028)_`;
+
+  return {
+    message,
+    templateName: 'ldce_profile_verified',
+    templateParams: {
+      student_name: firstName,
+      enrollment_number: enrollmentNumber,
+      portal_link: `${portalUrl}/drives`,
+    },
+  };
+}
+
+export function getProfileRejectedWhatsApp({
+  firstName,
+  enrollmentNumber,
+  remarks,
+}: {
+  firstName: string;
+  enrollmentNumber: string;
+  remarks?: string | null;
+}) {
+  const portalUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  const remarksText = remarks ? `\n⚠️ *TPO Remarks:* ${remarks}\n` : '';
+  const message =
+    `⚠️ *[LDCE Placements] Action Required: Profile Verification*\n\n` +
+    `Hello *${firstName}* (Roll: ${enrollmentNumber}),\n\n` +
+    `Your academic profile requires correction before verification can be completed.${remarksText}\n` +
+    `Please log in to the portal, review the remarks, and re-submit.\n\n` +
+    `🔗 *Update Profile:* ${portalUrl}/profile\n\n` +
+    `_Training & Placement Cell, L.D. College of Engineering (GTU Code: 028)_`;
+
+  return {
+    message,
+    templateName: 'ldce_profile_action_required',
+    templateParams: {
+      student_name: firstName,
+      remarks: remarks || 'Please review your uploaded documents.',
+      portal_link: `${portalUrl}/profile`,
+    },
+  };
+}
+
+export function getApplicantShortlistedWhatsApp({
+  firstName,
+  enrollmentNumber,
+  companyName,
+  jobRole,
+  packageLpa,
+}: {
+  firstName: string;
+  enrollmentNumber: string;
+  companyName: string;
+  jobRole: string;
+  packageLpa?: number | null;
+}) {
+  const portalUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  const ctcText = packageLpa ? `\n💰 *CTC:* INR ${packageLpa} LPA` : '';
+  const message =
+    `🎯 *[LDCE Placements] Application Shortlisted!*\n\n` +
+    `Hello *${firstName}* (Roll: ${enrollmentNumber}),\n\n` +
+    `Congratulations! You have been *SHORTLISTED* for the campus recruitment process:\n\n` +
+    `🏢 *Company:* ${companyName}\n` +
+    `💼 *Role:* ${jobRole}${ctcText}\n\n` +
+    `Please check the portal for the round schedule, venue, and reporting instructions.\n\n` +
+    `🔗 *View Application:* ${portalUrl}/applications\n\n` +
+    `_Training & Placement Cell, L.D. College of Engineering (GTU Code: 028)_`;
+
+  return {
+    message,
+    templateName: 'ldce_applicant_shortlisted',
+    templateParams: {
+      student_name: firstName,
+      company_name: companyName,
+      job_role: jobRole,
+      portal_link: `${portalUrl}/applications`,
+    },
+  };
+}
+
+export function getApplicantSelectedWhatsApp({
+  firstName,
+  enrollmentNumber,
+  companyName,
+  jobRole,
+  packageLpa,
+}: {
+  firstName: string;
+  enrollmentNumber: string;
+  companyName: string;
+  jobRole: string;
+  packageLpa?: number | null;
+}) {
+  const portalUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  const ctcText = packageLpa ? `\n💰 *Package (CTC):* INR ${packageLpa} LPA` : '';
+  const message =
+    `🎉 *[LDCE Placements] Congratulations! Offer Extended!*\n\n` +
+    `Dear *${firstName}* (Roll: ${enrollmentNumber}),\n\n` +
+    `We are delighted to inform you that you have been *SELECTED* by *${companyName}* for the position of *${jobRole}*!${ctcText}\n\n` +
+    `Official onboarding details will follow through the Placement Cell.\n\n` +
+    `🔗 *Access Offers:* ${portalUrl}/applications\n\n` +
+    `_Training & Placement Cell, L.D. College of Engineering (Estd. 1948)_`;
+
+  return {
+    message,
+    templateName: 'ldce_applicant_selected',
+    templateParams: {
+      student_name: firstName,
+      company_name: companyName,
+      job_role: jobRole,
+      portal_link: `${portalUrl}/applications`,
+    },
+  };
+}
+
+export function getApplicantRejectedWhatsApp({
+  firstName,
+  enrollmentNumber,
+  companyName,
+  jobRole,
+}: {
+  firstName: string;
+  enrollmentNumber: string;
+  companyName: string;
+  jobRole: string;
+}) {
+  const portalUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  const message =
+    `ℹ️ *[LDCE Placements] Application Update: ${companyName}*\n\n` +
+    `Hello *${firstName}*,\n\n` +
+    `Thank you for participating in the placement drive for *${companyName}* (${jobRole}). ` +
+    `While you were not selected in this cycle, multiple new recruitment drives are actively accepting applications.\n\n` +
+    `🔗 *Explore Active Drives:* ${portalUrl}/drives\n\n` +
+    `_Training & Placement Cell, L.D. College of Engineering (GTU Code: 028)_`;
+
+  return {
+    message,
+    templateName: 'ldce_applicant_rejected',
+    templateParams: {
+      student_name: firstName,
+      company_name: companyName,
+      portal_link: `${portalUrl}/drives`,
+    },
+  };
+}
+

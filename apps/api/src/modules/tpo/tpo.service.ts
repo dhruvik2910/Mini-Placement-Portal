@@ -18,6 +18,9 @@ import {
   TpoAnalyticsDto,
   EligibilityPreviewResult,
   TpoActivityItem,
+  NotificationChannel,
+  SendInterviewAlertDto,
+  SendInterviewAlertResultDto,
 } from '@placement/shared';
 
 export class TpoService {
@@ -1446,6 +1449,165 @@ export class TpoService {
   async getTpoNotifications(): Promise<TpoActivityItem[]> {
     const stats = await this.getDashboardStats();
     return stats.recentActivity;
+  }
+
+  /**
+   * Dispatch Instant Interview Alerts to selected candidate applications
+   */
+  async sendInterviewAlert(dto: SendInterviewAlertDto): Promise<SendInterviewAlertResultDto> {
+    const applications = await prisma.application.findMany({
+      where: { id: { in: dto.applicationIds } },
+      include: {
+        studentProfile: { include: { user: true } },
+        recruitmentDrive: { include: { company: true } },
+      },
+    });
+
+    const portalUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    let dispatchedCount = 0;
+    const channelsUsed = Array.from(new Set(dto.channels));
+    const details: NonNullable<SendInterviewAlertResultDto['details']> = [];
+
+    for (const app of applications) {
+      if (!app.studentProfile || !app.studentProfile.user) continue;
+
+      const profile = app.studentProfile;
+      const email = profile.user.email;
+      const phone = profile.phone;
+      const drive = app.recruitmentDrive;
+      const company = drive.company;
+      const studentName = `${profile.firstName} ${profile.lastName}`.trim();
+
+      const studentChannelResults: Array<{
+        channel: NotificationChannel;
+        success: boolean;
+        messageId?: string;
+        error?: string;
+      }> = [];
+
+      // 1. Instant WhatsApp Alert
+      if (channelsUsed.includes(NotificationChannel.WHATSAPP) && phone) {
+        const waMessage =
+          `⚡ *[LDCE Placements] Urgent Interview Alert!*\n\n` +
+          `Hello *${profile.firstName}* (Roll: ${profile.enrollmentNumber}),\n\n` +
+          `You are scheduled for the campus recruitment process:\n\n` +
+          `🏢 *Company:* ${company.name}\n` +
+          `💼 *Role:* ${drive.jobRole}\n` +
+          `🎯 *Round:* ${dto.roundName}\n` +
+          `⏰ *Time:* ${dto.scheduleTime}\n` +
+          `📍 *Venue:* ${dto.venue}\n` +
+          (dto.customNote ? `\n📝 *Notes:* ${dto.customNote}\n` : '') +
+          `\nPlease report in formal attire with your ID and printed copies of your resume.\n\n` +
+          `🔗 *View Details:* ${portalUrl}/applications\n\n` +
+          `_Training & Placement Cell, L.D. College of Engineering (GTU Code: 028)_`;
+
+        const waRes = await notificationDispatcher.dispatch({
+          studentProfileId: profile.id,
+          recipientEmail: email,
+          recipientPhone: phone,
+          channel: NotificationChannel.WHATSAPP,
+          template: 'INTERVIEW_ALERT',
+          subject: `[LDCE Placements] Interview Alert: ${company.name} — ${dto.roundName}`,
+          bodyText: waMessage,
+          bodyHtml: '',
+          idempotencyKey: `wa-alert-${app.id}-${dto.roundName.replace(/\s+/g, '')}-${Date.now()}`,
+        });
+
+        studentChannelResults.push({
+          channel: NotificationChannel.WHATSAPP,
+          success: waRes.delivered,
+          error: waRes.error,
+        });
+      }
+
+      // 2. SMS Alert
+      if (channelsUsed.includes(NotificationChannel.SMS) && phone) {
+        const smsMessage =
+          `LDCE Placements: ${profile.firstName}, your interview for ${company.name} (${dto.roundName}) is at ${dto.scheduleTime} in ${dto.venue}. Check portal for details.`;
+
+        const smsRes = await notificationDispatcher.dispatch({
+          studentProfileId: profile.id,
+          recipientEmail: email,
+          recipientPhone: phone,
+          channel: NotificationChannel.SMS,
+          template: 'INTERVIEW_ALERT',
+          subject: `[LDCE Placements] SMS Alert: ${company.name}`,
+          bodyText: smsMessage,
+          bodyHtml: '',
+          idempotencyKey: `sms-alert-${app.id}-${dto.roundName.replace(/\s+/g, '')}-${Date.now()}`,
+        });
+
+        studentChannelResults.push({
+          channel: NotificationChannel.SMS,
+          success: smsRes.delivered,
+          error: smsRes.error,
+        });
+      }
+
+      // 3. Email Alert + In-App Notification
+      if (channelsUsed.includes(NotificationChannel.EMAIL)) {
+        const emailSubject = `[LDCE Placements] Interview Schedule: ${company.name} — ${dto.roundName}`;
+        const emailText =
+          `Dear ${profile.firstName} (Roll: ${profile.enrollmentNumber}),\n\n` +
+          `You have been scheduled for the campus placement interview with ${company.name}.\n\n` +
+          `Round: ${dto.roundName}\nTime: ${dto.scheduleTime}\nVenue: ${dto.venue}\n` +
+          (dto.customNote ? `Notes: ${dto.customNote}\n\n` : '\n') +
+          `Please arrive 15 minutes before your scheduled time in formal attire.\n\n` +
+          `Training & Placement Cell, L.D. College of Engineering, Ahmedabad`;
+
+        const emailHtml =
+          `<p>Dear <strong>${profile.firstName}</strong> (Roll: ${profile.enrollmentNumber}),</p>` +
+          `<p>You have been scheduled for the campus placement interview with <strong>${company.name}</strong>.</p>` +
+          `<div style="background: #f2f4fc; padding: 16px; border-left: 4px solid #13357b; margin: 16px 0;">` +
+          `<p><strong>Company:</strong> ${company.name}</p>` +
+          `<p><strong>Role:</strong> ${drive.jobRole}</p>` +
+          `<p><strong>Round:</strong> ${dto.roundName}</p>` +
+          `<p><strong>Time:</strong> ${dto.scheduleTime}</p>` +
+          `<p><strong>Venue:</strong> ${dto.venue}</p>` +
+          (dto.customNote ? `<p><strong>Instructions:</strong> ${dto.customNote}</p>` : '') +
+          `</div>` +
+          `<p>Training & Placement Cell, L.D. College of Engineering (GTU Code: 028)</p>`;
+
+        const emailRes = await notificationDispatcher.dispatch({
+          studentProfileId: profile.id,
+          recipientEmail: email,
+          recipientPhone: phone,
+          channel: NotificationChannel.EMAIL,
+          template: 'INTERVIEW_ALERT',
+          subject: emailSubject,
+          bodyText: emailText,
+          bodyHtml: emailHtml,
+          idempotencyKey: `email-alert-${app.id}-${dto.roundName.replace(/\s+/g, '')}-${Date.now()}`,
+          inAppNotification: {
+            title: `Interview Alert: ${company.name} (${dto.roundName})`,
+            message: `Scheduled for ${dto.scheduleTime} at ${dto.venue}.`,
+            type: 'INTERVIEW',
+          },
+        });
+
+        studentChannelResults.push({
+          channel: NotificationChannel.EMAIL,
+          success: emailRes.delivered,
+          error: emailRes.error,
+        });
+      }
+
+      dispatchedCount++;
+      details.push({
+        applicationId: app.id,
+        studentName,
+        enrollmentNumber: profile.enrollmentNumber,
+        channels: studentChannelResults,
+      });
+    }
+
+    return {
+      success: true,
+      dispatchedCount,
+      channelsUsed,
+      timestamp: new Date().toISOString(),
+      details,
+    };
   }
 
   private mapCompanyToDto(c: any): CompanyDto {

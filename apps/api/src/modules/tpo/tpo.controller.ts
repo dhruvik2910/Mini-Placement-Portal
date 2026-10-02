@@ -324,6 +324,20 @@ export class TpoController {
     }
   }
 
+  async sendInterviewAlert(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await tpoService.sendInterviewAlert(req.body);
+      const response: ApiResponse<typeof result> = {
+        success: true,
+        message: `Instant alerts dispatched to ${result.dispatchedCount} student(s)`,
+        data: result,
+      };
+      res.status(200).json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   async getAnalytics(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const analytics = await tpoService.getAnalytics();

@@ -99,8 +99,8 @@ export default function TpoNotificationsPage() {
               : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
           }`}
         >
-          <span className="material-symbols-outlined text-[18px]">mail</span>
-          <span>Email &amp; SMS Delivery Outbox</span>
+          <span className="material-symbols-outlined text-[18px]">outgoing_mail</span>
+          <span>Email, SMS &amp; WhatsApp Outbox</span>
           <span className="px-2 py-0.5 rounded-full text-[11px] bg-white/20">
             {deliveryLogs.length}
           </span>
@@ -226,10 +226,12 @@ export default function TpoNotificationsPage() {
                       </td>
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         <span className="inline-flex items-center gap-1 text-[12px] font-bold text-on-surface-variant">
-                          <span className="material-symbols-outlined text-[16px]">
-                            {log.channel === 'SMS' ? 'smartphone' : 'mail'}
+                          <span className={`material-symbols-outlined text-[16px] ${log.channel === 'WHATSAPP' ? 'text-emerald-600' : ''}`}>
+                            {log.channel === 'WHATSAPP' ? 'chat' : log.channel === 'SMS' ? 'smartphone' : 'mail'}
                           </span>
-                          <span>{log.channel}</span>
+                          <span className={log.channel === 'WHATSAPP' ? 'text-emerald-700 font-extrabold' : ''}>
+                            {log.channel}
+                          </span>
                         </span>
                       </td>
                       <td className="py-3.5 px-4 whitespace-nowrap">

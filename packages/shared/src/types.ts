@@ -403,4 +403,38 @@ export interface NotificationDeliveryLogDto {
   createdAt: string;
 }
 
+/**
+ * Payload for dispatching instant interview alerts across WhatsApp, SMS, and Email
+ */
+export interface SendInterviewAlertDto {
+  applicationIds: string[];
+  roundName: string;
+  scheduleTime: string;
+  venue: string;
+  channels: NotificationChannel[];
+  customNote?: string;
+}
+
+/**
+ * Result returned after dispatching instant interview alerts
+ */
+export interface SendInterviewAlertResultDto {
+  success: boolean;
+  dispatchedCount: number;
+  channelsUsed: NotificationChannel[];
+  timestamp: string;
+  details?: Array<{
+    applicationId: string;
+    studentName: string;
+    enrollmentNumber: string;
+    channels: Array<{
+      channel: NotificationChannel;
+      success: boolean;
+      messageId?: string;
+      error?: string;
+    }>;
+  }>;
+}
+
+
 

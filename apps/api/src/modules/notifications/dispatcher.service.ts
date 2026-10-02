@@ -14,7 +14,13 @@ import {
   getApplicantShortlistedEmail,
   getApplicantSelectedEmail,
   getApplicantRejectedEmail,
+  getProfileVerifiedWhatsApp,
+  getProfileRejectedWhatsApp,
+  getApplicantShortlistedWhatsApp,
+  getApplicantSelectedWhatsApp,
+  getApplicantRejectedWhatsApp,
 } from './templates';
+import { whatsAppNotificationProvider } from './whatsapp.provider';
 
 export interface DispatchOptions {
   studentProfileId?: string;
@@ -107,6 +113,14 @@ export class NotificationDispatcherService {
         const result = await this.provider.sendSms({
           to: options.recipientPhone,
           message: options.bodyText,
+        });
+        isSuccess = result.success;
+        providerError = result.error;
+      } else if (channel === NotificationChannel.WHATSAPP && options.recipientPhone) {
+        const result = await whatsAppNotificationProvider.sendWhatsApp({
+          to: options.recipientPhone,
+          message: options.bodyText,
+          templateName: options.template,
         });
         isSuccess = result.success;
         providerError = result.error;
@@ -227,12 +241,32 @@ export class NotificationDispatcherService {
           studentProfileId,
           recipientEmail: email,
           recipientPhone: phone,
+          channel: NotificationChannel.EMAIL,
           template: 'PROFILE_VERIFIED',
           subject,
           bodyText: text,
           bodyHtml: html,
           idempotencyKey,
         });
+
+        // Instant WhatsApp Alert
+        if (phone) {
+          const wa = getProfileVerifiedWhatsApp({
+            firstName: profile.firstName,
+            enrollmentNumber: profile.enrollmentNumber,
+          });
+          await this.dispatch({
+            studentProfileId,
+            recipientEmail: email,
+            recipientPhone: phone,
+            channel: NotificationChannel.WHATSAPP,
+            template: 'PROFILE_VERIFIED',
+            subject: '[LDCE Placements] Profile Verified',
+            bodyText: wa.message,
+            bodyHtml: '',
+            idempotencyKey: `wa-verify-profile-${studentProfileId}-${status}-${hourKey}`,
+          });
+        }
       } else if (status === VerificationStatus.REJECTED) {
         const { subject, text, html } = getProfileRejectedEmail({
           firstName: profile.firstName,
@@ -244,12 +278,33 @@ export class NotificationDispatcherService {
           studentProfileId,
           recipientEmail: email,
           recipientPhone: phone,
+          channel: NotificationChannel.EMAIL,
           template: 'PROFILE_REJECTED',
           subject,
           bodyText: text,
           bodyHtml: html,
           idempotencyKey,
         });
+
+        // Instant WhatsApp Alert
+        if (phone) {
+          const wa = getProfileRejectedWhatsApp({
+            firstName: profile.firstName,
+            enrollmentNumber: profile.enrollmentNumber,
+            remarks: remarks || undefined,
+          });
+          await this.dispatch({
+            studentProfileId,
+            recipientEmail: email,
+            recipientPhone: phone,
+            channel: NotificationChannel.WHATSAPP,
+            template: 'PROFILE_REJECTED',
+            subject: '[LDCE Placements] Action Required: Profile Verification',
+            bodyText: wa.message,
+            bodyHtml: '',
+            idempotencyKey: `wa-verify-profile-${studentProfileId}-${status}-${hourKey}`,
+          });
+        }
       }
     } catch (err) {
       console.error(`[NOTIFICATION DISPATCHER] Profile verification dispatch failed:`, err);
@@ -306,12 +361,36 @@ export class NotificationDispatcherService {
           studentProfileId: profile.id,
           recipientEmail: email,
           recipientPhone: phone,
+          channel: NotificationChannel.EMAIL,
           template: 'APPLICANT_SHORTLISTED',
           subject,
           bodyText: text,
           bodyHtml: html,
           idempotencyKey,
         });
+
+        // Instant WhatsApp Alert
+        if (phone) {
+          const wa = getApplicantShortlistedWhatsApp({
+            firstName: profile.firstName,
+            enrollmentNumber: profile.enrollmentNumber,
+            companyName: company.name,
+            jobRole: drive.jobRole,
+            packageLpa: drive.packageLpa ? Number(drive.packageLpa) : null,
+          });
+
+          await this.dispatch({
+            studentProfileId: profile.id,
+            recipientEmail: email,
+            recipientPhone: phone,
+            channel: NotificationChannel.WHATSAPP,
+            template: 'APPLICANT_SHORTLISTED',
+            subject: `[LDCE Placements] Shortlisted: ${company.name}`,
+            bodyText: wa.message,
+            bodyHtml: '',
+            idempotencyKey: `wa-app-status-${applicationId}-${newStatus}`,
+          });
+        }
       } else if (newStatus === ApplicationStatus.SELECTED) {
         const { subject, text, html } = getApplicantSelectedEmail({
           firstName: profile.firstName,
@@ -325,12 +404,36 @@ export class NotificationDispatcherService {
           studentProfileId: profile.id,
           recipientEmail: email,
           recipientPhone: phone,
+          channel: NotificationChannel.EMAIL,
           template: 'APPLICANT_SELECTED',
           subject,
           bodyText: text,
           bodyHtml: html,
           idempotencyKey,
         });
+
+        // Instant WhatsApp Alert
+        if (phone) {
+          const wa = getApplicantSelectedWhatsApp({
+            firstName: profile.firstName,
+            enrollmentNumber: profile.enrollmentNumber,
+            companyName: company.name,
+            jobRole: drive.jobRole,
+            packageLpa: drive.packageLpa ? Number(drive.packageLpa) : null,
+          });
+
+          await this.dispatch({
+            studentProfileId: profile.id,
+            recipientEmail: email,
+            recipientPhone: phone,
+            channel: NotificationChannel.WHATSAPP,
+            template: 'APPLICANT_SELECTED',
+            subject: `[LDCE Placements] Offer Extended! ${company.name}`,
+            bodyText: wa.message,
+            bodyHtml: '',
+            idempotencyKey: `wa-app-status-${applicationId}-${newStatus}`,
+          });
+        }
       } else if (newStatus === ApplicationStatus.REJECTED) {
         const { subject, text, html } = getApplicantRejectedEmail({
           firstName: profile.firstName,
@@ -343,12 +446,35 @@ export class NotificationDispatcherService {
           studentProfileId: profile.id,
           recipientEmail: email,
           recipientPhone: phone,
+          channel: NotificationChannel.EMAIL,
           template: 'APPLICANT_REJECTED',
           subject,
           bodyText: text,
           bodyHtml: html,
           idempotencyKey,
         });
+
+        // Instant WhatsApp Alert
+        if (phone) {
+          const wa = getApplicantRejectedWhatsApp({
+            firstName: profile.firstName,
+            enrollmentNumber: profile.enrollmentNumber,
+            companyName: company.name,
+            jobRole: drive.jobRole,
+          });
+
+          await this.dispatch({
+            studentProfileId: profile.id,
+            recipientEmail: email,
+            recipientPhone: phone,
+            channel: NotificationChannel.WHATSAPP,
+            template: 'APPLICANT_REJECTED',
+            subject: `[LDCE Placements] Application Update: ${company.name}`,
+            bodyText: wa.message,
+            bodyHtml: '',
+            idempotencyKey: `wa-app-status-${applicationId}-${newStatus}`,
+          });
+        }
       }
     } catch (err) {
       console.error(`[NOTIFICATION DISPATCHER] Application status dispatch failed:`, err);

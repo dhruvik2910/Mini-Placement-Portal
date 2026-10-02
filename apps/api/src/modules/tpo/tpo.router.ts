@@ -24,6 +24,7 @@ router.get('/dashboard', (req, res, next) => tpoController.getDashboard(req, res
 router.get('/analytics', (req, res, next) => tpoController.getAnalytics(req, res, next));
 router.get('/notifications', (req, res, next) => tpoController.getNotifications(req, res, next));
 router.get('/notifications/delivery-logs', (req, res, next) => tpoController.getDeliveryLogs(req, res, next));
+router.post('/notifications/interview-alert', (req, res, next) => tpoController.sendInterviewAlert(req, res, next));
 router.get('/applications', (req, res, next) => tpoController.getAllApplications(req, res, next));
 router.get('/applications/export-csv', (req, res, next) => tpoController.exportApplicationsCsv(req, res, next));
 router.get('/applications/export/csv', (req, res, next) => tpoController.exportApplicationsCsv(req, res, next));
