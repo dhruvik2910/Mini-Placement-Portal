@@ -7,14 +7,28 @@ import { authenticate, requireRole } from '../../middleware/auth.middleware';
 import { validateRequest } from '../../middleware/validate.middleware';
 import { UserRole, UpdateProfileSchema } from '@placement/shared';
 
-// Setup multer storage
-const uploadDir = path.resolve(__dirname, '../../../uploads/resumes');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+import os from 'os';
+
+// Setup multer storage (Serverless compatible: uses /tmp on Vercel, local uploads in dev)
+const getUploadDir = () => {
+  if (process.env.VERCEL) {
+    return path.join(os.tmpdir(), 'uploads', 'resumes');
+  }
+  return path.resolve(process.cwd(), 'uploads/resumes');
+};
 
 const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadDir),
+  destination: (_req, _file, cb) => {
+    try {
+      const targetDir = getUploadDir();
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+      }
+      cb(null, targetDir);
+    } catch (err) {
+      cb(err as Error, os.tmpdir());
+    }
+  },
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname);
     const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;

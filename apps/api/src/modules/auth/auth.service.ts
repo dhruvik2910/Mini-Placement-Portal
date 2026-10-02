@@ -10,7 +10,6 @@ import {
   AuthResponse,
   UserDto,
   StudentProfileDto,
-  TpoProfileDto,
 } from '@placement/shared';
 import { z } from 'zod';
 import { StudentRegisterSchema, LoginSchema } from '@placement/shared';
@@ -93,7 +92,16 @@ export class AuthService {
         isActive: user.isActive,
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
-        studentProfile: this.mapStudentProfileToDto(user.studentProfile),
+        studentProfile: {
+          ...user.studentProfile,
+          studentType: user.studentProfile.studentType as unknown as StudentType,
+          status: user.studentProfile.status as unknown as ProfileStatus,
+          verificationStatus: user.studentProfile.verificationStatus as unknown as VerificationStatus,
+          currentCgpa: Number(user.studentProfile.currentCgpa),
+          createdAt: user.studentProfile.createdAt.toISOString(),
+          updatedAt: user.studentProfile.updatedAt.toISOString(),
+          skills: (user.studentProfile.skills as any) || null,
+        } as StudentProfileDto,
       },
     };
   }
@@ -142,12 +150,68 @@ export class AuthService {
       updatedAt: user.updatedAt.toISOString(),
     };
 
+    let studentProfileDto: StudentProfileDto | undefined = undefined;
+    if (user.studentProfile) {
+      const sp = user.studentProfile;
+      studentProfileDto = {
+        ...sp,
+        studentType: sp.studentType as unknown as StudentType,
+        status: sp.status as unknown as ProfileStatus,
+        verificationStatus: sp.verificationStatus as unknown as VerificationStatus,
+        currentCgpa: Number(sp.currentCgpa),
+        createdAt: sp.createdAt.toISOString(),
+        updatedAt: sp.updatedAt.toISOString(),
+        lockedAt: sp.lockedAt?.toISOString() || null,
+        dateOfBirth: sp.dateOfBirth?.toISOString() || null,
+        resumeUpdatedAt: sp.resumeUpdatedAt?.toISOString() || null,
+        skills: (sp.skills as any) || null,
+        tenthMarks: sp.tenthMarks
+          ? {
+              ...sp.tenthMarks,
+              marksObtained: Number(sp.tenthMarks.marksObtained),
+              totalMarks: Number(sp.tenthMarks.totalMarks),
+              percentage: Number(sp.tenthMarks.percentage),
+              subjectWiseMarks: (sp.tenthMarks.subjectWiseMarks as any) || [],
+              createdAt: sp.tenthMarks.createdAt.toISOString(),
+              updatedAt: sp.tenthMarks.updatedAt.toISOString(),
+            }
+          : null,
+        twelfthDetails: sp.twelfthDetails
+          ? {
+              ...sp.twelfthDetails,
+              marksObtained: Number(sp.twelfthDetails.marksObtained),
+              totalMarks: Number(sp.twelfthDetails.totalMarks),
+              percentage: Number(sp.twelfthDetails.percentage),
+              createdAt: sp.twelfthDetails.createdAt.toISOString(),
+              updatedAt: sp.twelfthDetails.updatedAt.toISOString(),
+            }
+          : null,
+        d2dDetails: sp.d2dDetails
+          ? {
+              ...sp.d2dDetails,
+              diplomaCgpa: Number(sp.d2dDetails.diplomaCgpa),
+              diplomaPercentage: sp.d2dDetails.diplomaPercentage
+                ? Number(sp.d2dDetails.diplomaPercentage)
+                : null,
+              createdAt: sp.d2dDetails.createdAt.toISOString(),
+              updatedAt: sp.d2dDetails.updatedAt.toISOString(),
+            }
+          : null,
+      };
+    }
+
     return {
       token,
       user: {
         ...userDto,
-        studentProfile: user.studentProfile ? this.mapStudentProfileToDto(user.studentProfile) : undefined,
-        tpoProfile: this.mapTpoProfileToDto(user.tpoProfile),
+        studentProfile: studentProfileDto,
+        tpoProfile: user.tpoProfile
+          ? {
+              ...user.tpoProfile,
+              createdAt: user.tpoProfile.createdAt.toISOString(),
+              updatedAt: user.tpoProfile.updatedAt.toISOString(),
+            }
+          : null,
       },
     };
   }
@@ -171,6 +235,56 @@ export class AuthService {
       throw AppError.notFound('User not found');
     }
 
+    let studentProfileDto: StudentProfileDto | undefined = undefined;
+    if (user.studentProfile) {
+      const sp = user.studentProfile;
+      studentProfileDto = {
+        ...sp,
+        studentType: sp.studentType as unknown as StudentType,
+        status: sp.status as unknown as ProfileStatus,
+        verificationStatus: sp.verificationStatus as unknown as VerificationStatus,
+        currentCgpa: Number(sp.currentCgpa),
+        createdAt: sp.createdAt.toISOString(),
+        updatedAt: sp.updatedAt.toISOString(),
+        lockedAt: sp.lockedAt?.toISOString() || null,
+        dateOfBirth: sp.dateOfBirth?.toISOString() || null,
+        resumeUpdatedAt: sp.resumeUpdatedAt?.toISOString() || null,
+        skills: (sp.skills as any) || null,
+        tenthMarks: sp.tenthMarks
+          ? {
+              ...sp.tenthMarks,
+              marksObtained: Number(sp.tenthMarks.marksObtained),
+              totalMarks: Number(sp.tenthMarks.totalMarks),
+              percentage: Number(sp.tenthMarks.percentage),
+              subjectWiseMarks: (sp.tenthMarks.subjectWiseMarks as any) || [],
+              createdAt: sp.tenthMarks.createdAt.toISOString(),
+              updatedAt: sp.tenthMarks.updatedAt.toISOString(),
+            }
+          : null,
+        twelfthDetails: sp.twelfthDetails
+          ? {
+              ...sp.twelfthDetails,
+              marksObtained: Number(sp.twelfthDetails.marksObtained),
+              totalMarks: Number(sp.twelfthDetails.totalMarks),
+              percentage: Number(sp.twelfthDetails.percentage),
+              createdAt: sp.twelfthDetails.createdAt.toISOString(),
+              updatedAt: sp.twelfthDetails.updatedAt.toISOString(),
+            }
+          : null,
+        d2dDetails: sp.d2dDetails
+          ? {
+              ...sp.d2dDetails,
+              diplomaCgpa: Number(sp.d2dDetails.diplomaCgpa),
+              diplomaPercentage: sp.d2dDetails.diplomaPercentage
+                ? Number(sp.d2dDetails.diplomaPercentage)
+                : null,
+              createdAt: sp.d2dDetails.createdAt.toISOString(),
+              updatedAt: sp.d2dDetails.updatedAt.toISOString(),
+            }
+          : null,
+      };
+    }
+
     return {
       id: user.id,
       email: user.email,
@@ -178,97 +292,14 @@ export class AuthService {
       isActive: user.isActive,
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
-      studentProfile: user.studentProfile ? this.mapStudentProfileToDto(user.studentProfile) : undefined,
-      tpoProfile: this.mapTpoProfileToDto(user.tpoProfile),
-    };
-  }
-
-  private mapStudentProfileToDto(sp: any): StudentProfileDto {
-    return {
-      id: sp.id,
-      userId: sp.userId,
-      studentType: sp.studentType as unknown as StudentType,
-      enrollmentNumber: sp.enrollmentNumber,
-      firstName: sp.firstName,
-      middleName: sp.middleName ?? null,
-      lastName: sp.lastName,
-      department: sp.department,
-      batchYear: sp.batchYear,
-      currentSemester: sp.currentSemester,
-      currentCgpa: Number(sp.currentCgpa),
-      activeBacklogs: sp.activeBacklogs,
-      totalBacklogs: sp.totalBacklogs,
-      phone: sp.phone ?? null,
-      dateOfBirth: sp.dateOfBirth ? (sp.dateOfBirth instanceof Date ? sp.dateOfBirth.toISOString() : new Date(sp.dateOfBirth).toISOString()) : null,
-      gender: sp.gender ?? null,
-      address: sp.address ?? null,
-      skills: (sp.skills as any) || null,
-      resumeUrl: sp.resumeUrl ?? null,
-      resumeName: sp.resumeName ?? null,
-      resumeUpdatedAt: sp.resumeUpdatedAt ? (sp.resumeUpdatedAt instanceof Date ? sp.resumeUpdatedAt.toISOString() : new Date(sp.resumeUpdatedAt).toISOString()) : null,
-      status: sp.status as unknown as ProfileStatus,
-      lockedAt: sp.lockedAt ? (sp.lockedAt instanceof Date ? sp.lockedAt.toISOString() : new Date(sp.lockedAt).toISOString()) : null,
-      verificationStatus: sp.verificationStatus as unknown as VerificationStatus,
-      tenthMarks: sp.tenthMarks
+      studentProfile: studentProfileDto,
+      tpoProfile: user.tpoProfile
         ? {
-            id: sp.tenthMarks.id,
-            studentProfileId: sp.tenthMarks.studentProfileId,
-            board: sp.tenthMarks.board,
-            schoolName: sp.tenthMarks.schoolName,
-            passingYear: sp.tenthMarks.passingYear,
-            marksObtained: Number(sp.tenthMarks.marksObtained),
-            totalMarks: Number(sp.tenthMarks.totalMarks),
-            percentage: Number(sp.tenthMarks.percentage),
-            subjectWiseMarks: (sp.tenthMarks.subjectWiseMarks as any) || [],
-            createdAt: sp.tenthMarks.createdAt instanceof Date ? sp.tenthMarks.createdAt.toISOString() : new Date(sp.tenthMarks.createdAt).toISOString(),
-            updatedAt: sp.tenthMarks.updatedAt instanceof Date ? sp.tenthMarks.updatedAt.toISOString() : new Date(sp.tenthMarks.updatedAt).toISOString(),
+            ...user.tpoProfile,
+            createdAt: user.tpoProfile.createdAt.toISOString(),
+            updatedAt: user.tpoProfile.updatedAt.toISOString(),
           }
         : null,
-      twelfthDetails: sp.twelfthDetails
-        ? {
-            id: sp.twelfthDetails.id,
-            studentProfileId: sp.twelfthDetails.studentProfileId,
-            board: sp.twelfthDetails.board,
-            schoolName: sp.twelfthDetails.schoolName,
-            passingYear: sp.twelfthDetails.passingYear,
-            stream: sp.twelfthDetails.stream,
-            marksObtained: Number(sp.twelfthDetails.marksObtained),
-            totalMarks: Number(sp.twelfthDetails.totalMarks),
-            percentage: Number(sp.twelfthDetails.percentage),
-            createdAt: sp.twelfthDetails.createdAt instanceof Date ? sp.twelfthDetails.createdAt.toISOString() : new Date(sp.twelfthDetails.createdAt).toISOString(),
-            updatedAt: sp.twelfthDetails.updatedAt instanceof Date ? sp.twelfthDetails.updatedAt.toISOString() : new Date(sp.twelfthDetails.updatedAt).toISOString(),
-          }
-        : null,
-      d2dDetails: sp.d2dDetails
-        ? {
-            id: sp.d2dDetails.id,
-            studentProfileId: sp.d2dDetails.studentProfileId,
-            diplomaCollege: sp.d2dDetails.diplomaCollege,
-            diplomaUniversity: sp.d2dDetails.diplomaUniversity,
-            diplomaBranch: sp.d2dDetails.diplomaBranch,
-            passingYear: sp.d2dDetails.passingYear,
-            diplomaCgpa: Number(sp.d2dDetails.diplomaCgpa),
-            diplomaPercentage: sp.d2dDetails.diplomaPercentage ? Number(sp.d2dDetails.diplomaPercentage) : null,
-            createdAt: sp.d2dDetails.createdAt instanceof Date ? sp.d2dDetails.createdAt.toISOString() : new Date(sp.d2dDetails.createdAt).toISOString(),
-            updatedAt: sp.d2dDetails.updatedAt instanceof Date ? sp.d2dDetails.updatedAt.toISOString() : new Date(sp.d2dDetails.updatedAt).toISOString(),
-          }
-        : null,
-      createdAt: sp.createdAt instanceof Date ? sp.createdAt.toISOString() : new Date(sp.createdAt).toISOString(),
-      updatedAt: sp.updatedAt instanceof Date ? sp.updatedAt.toISOString() : new Date(sp.updatedAt).toISOString(),
-    };
-  }
-
-  private mapTpoProfileToDto(tp: any): TpoProfileDto | null {
-    if (!tp) return null;
-    return {
-      id: tp.id,
-      userId: tp.userId,
-      fullName: tp.fullName,
-      designation: tp.designation,
-      department: tp.department ?? null,
-      phone: tp.phone ?? null,
-      createdAt: tp.createdAt instanceof Date ? tp.createdAt.toISOString() : new Date(tp.createdAt).toISOString(),
-      updatedAt: tp.updatedAt instanceof Date ? tp.updatedAt.toISOString() : new Date(tp.updatedAt).toISOString(),
     };
   }
 }
