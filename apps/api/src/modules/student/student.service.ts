@@ -9,11 +9,29 @@ import {
 } from '@placement/shared';
 import { z } from 'zod';
 import { UpdateProfileSchema } from '@placement/shared';
+import { resumeStorageService, StreamResumeResult } from './resume-storage.service';
 
 export class StudentService {
   async getProfile(userId: string): Promise<StudentProfileDto> {
     const profile = await prisma.studentProfile.findUnique({
       where: { userId },
+      include: {
+        tenthMarks: true,
+        twelfthDetails: true,
+        d2dDetails: true,
+      },
+    });
+
+    if (!profile) {
+      throw AppError.notFound('Student profile not found');
+    }
+
+    return this.mapToDto(profile);
+  }
+
+  async getProfileById(studentProfileId: string): Promise<StudentProfileDto> {
+    const profile = await prisma.studentProfile.findUnique({
+      where: { id: studentProfileId },
       include: {
         tenthMarks: true,
         twelfthDetails: true,
@@ -223,11 +241,37 @@ export class StudentService {
 
   async updateResume(
     userId: string,
-    resumeUrl: string,
-    resumeName: string
+    options: {
+      fileBuffer?: Buffer;
+      fileName?: string;
+      directUrl?: string;
+      directName?: string;
+    }
   ): Promise<StudentProfileDto> {
     const profile = await prisma.studentProfile.findUnique({ where: { userId } });
     if (!profile) throw AppError.notFound('Profile not found');
+
+    let resumeUrl = options.directUrl || '';
+    let resumeName = options.directName || options.fileName || 'resume.pdf';
+
+    if (options.fileBuffer && options.fileName) {
+      const uploadResult = await resumeStorageService.uploadResume(
+        profile.id,
+        options.fileBuffer,
+        options.fileName
+      );
+      resumeUrl = uploadResult.url;
+      resumeName = uploadResult.name;
+    }
+
+    // Clean up previous resume if replacing and it's a blob / local file
+    if (profile.resumeUrl && profile.resumeUrl !== resumeUrl) {
+      try {
+        await resumeStorageService.deleteResume(profile.resumeUrl);
+      } catch (err) {
+        console.warn('Failed to clean up old resume:', err);
+      }
+    }
 
     const updated = await prisma.studentProfile.update({
       where: { id: profile.id },
@@ -246,6 +290,14 @@ export class StudentService {
     const profile = await prisma.studentProfile.findUnique({ where: { userId } });
     if (!profile) throw AppError.notFound('Profile not found');
 
+    if (profile.resumeUrl) {
+      try {
+        await resumeStorageService.deleteResume(profile.resumeUrl);
+      } catch (err) {
+        console.warn('Failed to delete resume storage file:', err);
+      }
+    }
+
     const updated = await prisma.studentProfile.update({
       where: { id: profile.id },
       data: {
@@ -257,6 +309,29 @@ export class StudentService {
     });
 
     return this.mapToDto(updated);
+  }
+
+  async getResumeStream(
+    id: string,
+    isUserId = true
+  ): Promise<StreamResumeResult> {
+    const profile = isUserId
+      ? await prisma.studentProfile.findUnique({ where: { userId: id } })
+      : await prisma.studentProfile.findUnique({ where: { id } });
+
+    if (!profile) {
+      throw AppError.notFound('Student profile not found');
+    }
+
+    if (!profile.resumeUrl) {
+      throw AppError.notFound('Resume has not been uploaded for this student');
+    }
+
+    const studentName = `${profile.firstName}_${profile.lastName}`.trim().replace(/\s+/g, '_');
+    return resumeStorageService.getResumeStream(
+      profile.resumeUrl,
+      studentName
+    );
   }
 
   async getNotifications(userId: string): Promise<NotificationDto[]> {

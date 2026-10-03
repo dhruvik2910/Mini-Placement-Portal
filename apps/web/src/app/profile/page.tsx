@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/auth-context';
-import { api } from '../../lib/api';
+import { api, openResume } from '../../lib/api';
 import type { StudentProfileDto, SubjectWiseMark } from '@placement/shared';
 
 export default function StudentProfilePage() {
@@ -1088,15 +1088,14 @@ export default function StudentProfilePage() {
               </div>
 
               <div className="flex items-center gap-2">
-                <a
-                  href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:5000'}${profile.resumeUrl}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-primary font-semibold text-[13px] border border-outline-variant/40 flex items-center gap-1"
+                <button
+                  type="button"
+                  onClick={() => openResume()}
+                  className="px-3 py-1.5 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-primary font-semibold text-[13px] border border-outline-variant/40 flex items-center gap-1 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[16px]">visibility</span>
                   <span>View PDF</span>
-                </a>
+                </button>
                 <button
                   type="button"
                   onClick={handleDeleteResume}

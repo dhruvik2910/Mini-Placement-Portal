@@ -1,40 +1,12 @@
 import { Router } from 'express';
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
 import { studentController } from './student.controller';
 import { authenticate, requireRole } from '../../middleware/auth.middleware';
 import { validateRequest } from '../../middleware/validate.middleware';
 import { UserRole, UpdateProfileSchema } from '@placement/shared';
 
-import os from 'os';
-
-// Setup multer storage (Serverless compatible: uses /tmp on Vercel, local uploads in dev)
-const getUploadDir = () => {
-  if (process.env.VERCEL) {
-    return path.join(os.tmpdir(), 'uploads', 'resumes');
-  }
-  return path.resolve(process.cwd(), 'uploads/resumes');
-};
-
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    try {
-      const targetDir = getUploadDir();
-      if (!fs.existsSync(targetDir)) {
-        fs.mkdirSync(targetDir, { recursive: true });
-      }
-      cb(null, targetDir);
-    } catch (err) {
-      cb(err as Error, os.tmpdir());
-    }
-  },
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-    cb(null, unique);
-  },
-});
+// Setup multer memory storage (Stores file in memory buffer, serverless & blob compatible)
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage,
@@ -50,8 +22,22 @@ const upload = multer({
 
 const router = Router();
 
-// Protect all routes in this router for STUDENT role
-router.use(authenticate, requireRole(UserRole.STUDENT));
+// Authentication required for all routes
+router.use(authenticate);
+
+// Protected resume viewing endpoint (Student can view own, TPO can view any student)
+// GET /api/v1/student/resume/:id
+router.get('/resume/:id', (req, res, next) =>
+  studentController.viewStudentResume(req, res, next)
+);
+
+// Enforce STUDENT role for all remaining routes
+router.use(requireRole(UserRole.STUDENT));
+
+// GET /api/v1/student/resume (view own resume)
+router.get('/resume', (req, res, next) =>
+  studentController.viewOwnResume(req, res, next)
+);
 
 // GET /api/v1/student/profile
 router.get('/profile', (req, res, next) => studentController.getProfile(req, res, next));

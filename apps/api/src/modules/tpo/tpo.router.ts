@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { tpoController } from './tpo.controller';
+import { studentController } from '../student/student.controller';
 import { authenticate, requireRole } from '../../middleware/auth.middleware';
 import { validateRequest } from '../../middleware/validate.middleware';
 import { UserRole } from '@placement/shared';
@@ -34,6 +35,7 @@ router.get('/students', (req, res, next) => tpoController.getStudents(req, res, 
 router.get('/students/export-csv', (req, res, next) => tpoController.exportStudentsCsv(req, res, next));
 router.get('/students/export/csv', (req, res, next) => tpoController.exportStudentsCsv(req, res, next));
 router.get('/students/:id', (req, res, next) => tpoController.getStudentById(req, res, next));
+router.get('/students/:id/resume', (req, res, next) => studentController.viewStudentResume(req, res, next));
 router.post(
   '/students/:id/verify',
   validateRequest(VerifyStudentProfileSchema),

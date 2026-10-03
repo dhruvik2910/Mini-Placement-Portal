@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { api, ApiError } from '../../../../lib/api';
+import { api, ApiError, openResume } from '../../../../lib/api';
 import type { StudentProfileDto, ApplicationDto, VerificationStatus } from '@placement/shared';
 
 type DetailedStudent = StudentProfileDto & {
@@ -550,15 +550,14 @@ export default function TpoStudentDetailPage() {
                     </span>
                   </div>
                 </div>
-                <a
-                  href={`http://localhost:5000${student.resumeUrl}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-1.5 py-2 rounded-xl bg-primary text-on-primary font-semibold text-[12px] hover:bg-primary-container transition-colors shadow-xs"
+                <button
+                  type="button"
+                  onClick={() => openResume(student.id)}
+                  className="w-full inline-flex items-center justify-center gap-1.5 py-2 rounded-xl bg-primary text-on-primary font-semibold text-[12px] hover:bg-primary-container transition-colors shadow-xs cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-[16px]">download</span>
+                  <span className="material-symbols-outlined text-[16px]">visibility</span>
                   <span>View / Download Resume PDF</span>
-                </a>
+                </button>
               </div>
             ) : (
               <p className="text-[12px] text-outline italic">No PDF resume uploaded yet.</p>

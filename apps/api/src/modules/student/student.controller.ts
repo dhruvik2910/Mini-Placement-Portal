@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { studentService } from './student.service';
 import { AppError } from '../../common/errors/app-error';
+import { UserRole } from '@placement/shared';
 
 export class StudentController {
   async getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -45,24 +46,70 @@ export class StudentController {
     try {
       if (!req.user) throw AppError.unauthorized();
 
-      let resumeUrl = req.body.resumeUrl;
-      let resumeName = req.body.resumeName || 'Resume.pdf';
-
+      let profile;
       if (req.file) {
-        resumeUrl = `/uploads/resumes/${req.file.filename}`;
-        resumeName = req.file.originalname;
+        profile = await studentService.updateResume(req.user.userId, {
+          fileBuffer: req.file.buffer,
+          fileName: req.file.originalname,
+        });
+      } else if (req.body.resumeUrl) {
+        profile = await studentService.updateResume(req.user.userId, {
+          directUrl: req.body.resumeUrl,
+          directName: req.body.resumeName,
+        });
+      } else {
+        throw AppError.badRequest('Resume PDF file is required');
       }
 
-      if (!resumeUrl) {
-        throw AppError.badRequest('Resume file or URL is required');
-      }
-
-      const profile = await studentService.updateResume(req.user.userId, resumeUrl, resumeName);
       res.status(200).json({
         success: true,
         message: 'Resume uploaded successfully',
         data: profile,
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async viewOwnResume(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (!req.user) throw AppError.unauthorized();
+      const streamResult = await studentService.getResumeStream(req.user.userId, true);
+
+      res.setHeader('Content-Type', streamResult.contentType);
+      res.setHeader(
+        'Content-Disposition',
+        `inline; filename="${encodeURIComponent(streamResult.filename)}"`
+      );
+      streamResult.stream.pipe(res);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async viewStudentResume(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (!req.user) throw AppError.unauthorized();
+      const { id } = req.params;
+
+      // Access Control: TPO can view any student, Student can only view their own
+      if (req.user.role === UserRole.STUDENT) {
+        const studentProfile = await studentService.getProfileById(id);
+        if (studentProfile.userId !== req.user.userId) {
+          throw AppError.forbidden('You are not authorized to view this resume');
+        }
+      } else if (req.user.role !== UserRole.TPO) {
+        throw AppError.forbidden('Access denied');
+      }
+
+      const streamResult = await studentService.getResumeStream(id, false);
+
+      res.setHeader('Content-Type', streamResult.contentType);
+      res.setHeader(
+        'Content-Disposition',
+        `inline; filename="${encodeURIComponent(streamResult.filename)}"`
+      );
+      streamResult.stream.pipe(res);
     } catch (error) {
       next(error);
     }

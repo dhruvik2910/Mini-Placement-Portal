@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { api, downloadCsv } from '../../../../../lib/api';
+import { api, downloadCsv, openResume } from '../../../../../lib/api';
 import type {
   ApplicationDto,
   RecruitmentDriveDto,
@@ -606,16 +606,15 @@ export default function DriveApplicantsPage() {
                       {/* Resume link */}
                       <td className="py-3 px-3 text-center whitespace-nowrap">
                         {student?.resumeUrl ? (
-                          <a
-                            href={`http://localhost:5000${student.resumeUrl}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center gap-1 text-primary hover:underline text-[12px] font-semibold"
+                          <button
+                            type="button"
+                            onClick={() => openResume(student.id || app.studentProfileId)}
+                            className="inline-flex items-center gap-1 text-primary hover:underline text-[12px] font-semibold cursor-pointer"
                             title="View PDF Resume"
                           >
                             <span className="material-symbols-outlined text-[16px]">picture_as_pdf</span>
                             <span>Resume</span>
-                          </a>
+                          </button>
                         ) : (
                           <span className="text-outline text-[11px] italic">Profile CV</span>
                         )}

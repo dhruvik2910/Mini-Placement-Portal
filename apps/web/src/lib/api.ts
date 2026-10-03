@@ -102,3 +102,38 @@ export async function downloadCsv(path: string, defaultFilename: string): Promis
   document.body.removeChild(a);
 }
 
+/**
+ * Securely opens a protected PDF resume in a new browser tab.
+ * Uses Authorization: Bearer header and converts response to an in-memory Blob URL,
+ * keeping JWT tokens completely out of the browser URL and history.
+ */
+export async function openResume(studentProfileId?: string): Promise<void> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('placement_token') : null;
+  if (!token) {
+    throw new ApiError('Authentication token not found. Please log in.', 401);
+  }
+
+  const endpoint = studentProfileId
+    ? `/student/resume/${studentProfileId}`
+    : '/student/resume';
+
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const errorJson = await res.json().catch(() => ({}));
+    throw new ApiError(
+      errorJson.message || `Failed to load resume (HTTP ${res.status})`,
+      res.status
+    );
+  }
+
+  const blob = await res.blob();
+  const pdfBlob = new Blob([blob], { type: 'application/pdf' });
+  const objectUrl = window.URL.createObjectURL(pdfBlob);
+  window.open(objectUrl, '_blank', 'noopener,noreferrer');
+}

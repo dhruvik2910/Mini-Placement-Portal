@@ -53,3 +53,5 @@ pnpm-debug.log*
 
 # Prisma generated artifacts
 apps/api/src/generated/
+.vercel
+.env*
